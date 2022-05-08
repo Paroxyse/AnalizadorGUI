@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 #include <msclr\marshal_cppstd.h>
 namespace AnalizadorGUI {
 
@@ -53,12 +54,12 @@ namespace AnalizadorGUI {
 	private: System::Windows::Forms::RichTextBox^ TBFile;
 
 
-	String ^CharsetName="symbnum.txt";
+	String ^CharsetName="symb.txt";
 	String ^MayusName="Mayus.txt";
 	String^ MinusName = "Minus.txt";
-	String^ FTName = "TablaT0.txt";
-	String^ CLName = "ListaCodigos0.txt";
-	String^ MLName = "ListaMensajes0.txt";
+	String^ FTName = "TablaT.txt";
+	String^ CLName = "LC.txt";
+	String^ MLName = "LM.txt";
 	String^ Input = "Entrada.txt";
 	private: System::Windows::Forms::RichTextBox^ TBProceso;
 
@@ -425,14 +426,37 @@ namespace AnalizadorGUI {
 		}
 
 	}
-	//Este método hace la magia
+	//Este método de 100 líneas se llevó un pedacito de mi alma cuando lo escribí
+	bool charaintcursed(std::string s, int i) 
+	{
+		switch (s.at(i)) 
+		{
+		case ' ':
+			return false;
+		case '\t':
+			return false;
+		case '\n':
+			return false;
+		case '=':
+			return false;
+		case '\'':
+			return false;
+		case '\"':
+			return false;
+		}
+		return true;
+	}
 	void analizar(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList)
 	{
 		std::vector<std::vector<int>> FT{};
 		FT = cargarFT(TFunc);
 		int state = 0;
+	
 		int symb;
 		int i = 0;
+		int lastindex=-1;
+		int currentTokenSize=0;
+		
 		std::string inString;
 		std::string outputerror = "";
 		std::string outputtoken = "";
@@ -440,12 +464,13 @@ namespace AnalizadorGUI {
 		inString = LeerArc(inputString);
 		while (i < inString.size())
 		{
+			
 			symb = dataType(inString.at(i), charset);
 			if (symb == -1) {
-				state = 500;
+				state = 600;
 				//cout << i << " " << symb << " " << state << " " << inString.at(i);
 			}
-			if (state < TFunc.size())
+			if (state < FT.size())
 			{
 				state = FT[state][symb];
 				//cout << i << " " << symb << " " << state << " " << inString.at(i); <--Reemplazar con equivalente en textbox
@@ -453,12 +478,17 @@ namespace AnalizadorGUI {
 				 //de final
 				if (i == inString.size() - 1 && state < FT.size())
 				{
-					state = FT[state][FT[state].size() - 1];
+					inString.append("\n");
 				}
 
+				if (inString.at(i) != ' ' && inString.at(i) != '\t' && inString.at(i) != '\n') 
+				{
+					currentTokenSize++;
+				}
+				
+				
 			}
-
-			if (state > TFunc.size())
+			if (state > FT.size())
 			{
 				//load code list
 				std::vector<int> cList = cargarVint(CodeList);
@@ -477,16 +507,49 @@ namespace AnalizadorGUI {
 				}
 				else 
 				{
-					outputerror.append(mList.at(ItemIndex)+"\n");
+					outputtoken.append("Error"+std::to_string(state)+"\n");
+					outputerror.append(std::to_string(state) + ": " + mList.at(ItemIndex) +" en: "+std::to_string(i) + "\n");
 				}
+
+
+				std::replace(outputerror.begin(), outputerror.end(), '_', ' ');
+				std::replace(outputerror.begin(), outputerror.end(), '-', ' ');
+				std::replace(outputtoken.begin(), outputtoken.end(), '_', ' ');
+				std::replace(outputtoken.begin(), outputtoken.end(), '-', ' ');
 				//Las dejo adentro del ciclo aunque reduzcan desempeño para que se vea cómo se realiza la acción progresivamente
 				TBError->Text = convertirUM(outputerror);
 				TBToken->Text = convertirUM(outputtoken);
 
-				state = 0;
+				
 			}
-			proceso.append(std::to_string(i) + "\t" + std::to_string(symb) + "\t" + std::to_string(state) + "\t" + inString.at(i)+"\n");
+			proceso.append(std::to_string(i) + "\t" + std::to_string(symb) + "\t" + std::to_string(state) + "\t" + inString.at(i));
+			if (state >= 500) 
+			{
+				proceso.append("\t<---");
+			}
+			//Desearía que no tuviera que hacer esta salvajada de ifs pero tengo el cerebro muy frito como para pensar en una solución elegante			
+			if (state > FT.size()) 
+			{
+				//Revisa si el valor en i es válido, no es un blank space, si el token actual no tiene una longitud de 1 y 
+				//si el estado anterior con este tipo de dato no explota
+				//En serio, este if hace que me sienta mal conmigo mismo
+				if (dataType(inString.at(i), charset) != -1 && currentTokenSize != 1 && charaintcursed(inString,i))
+				{
+					proceso = proceso.substr(0, proceso.size() - 1);
+					proceso.append("<-cut");
+				
+					lastindex = i;
+					i--;
+				}
+				
+				state = 0;
+				currentTokenSize = 0;
+				
+			}
+			proceso.append("\n");
 			TBProceso->Text = convertirUM(proceso);
+			
+			
 			i++;
 		}
 		//Cambiar por cambio de texto en tboxes
@@ -500,7 +563,8 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 		OpenFileDialog ofd;
 		ofd.InitialDirectory="C:";
 		ofd.Title="Abrir Archivo";
-		//ofd.Filter = "Image Files|*.jpg;*.jpeg;|All Files|*.*";
+		ofd.Filter= "Lya Files (*.lya)|*.lya;";
+	
 		ofd.ShowDialog();
 		Input = ofd.FileName;
 		

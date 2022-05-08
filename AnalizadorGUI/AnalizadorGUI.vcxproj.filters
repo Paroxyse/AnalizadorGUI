@@ -25,9 +25,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Input.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="Mayus.txt">
       <Filter>Resource Files</Filter>
     </Text>
@@ -43,16 +40,10 @@
     <Text Include="Entrada.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="ListaCodigos0.txt">
+    <Text Include="LC.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="ListaMensajes0.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="symbnum.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="TablaT0.txt">
+    <Text Include="LM.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
