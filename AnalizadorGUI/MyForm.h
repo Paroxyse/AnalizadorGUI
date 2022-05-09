@@ -96,44 +96,44 @@ namespace AnalizadorGUI {
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label4->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label4->Location = System::Drawing::Point(362, 259);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(118, 33);
+			this->label4->Size = System::Drawing::Size(152, 43);
 			this->label4->TabIndex = 21;
 			this->label4->Text = L"Errores";
 			// 
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label3->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label3->Location = System::Drawing::Point(362, 40);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(104, 33);
+			this->label3->Size = System::Drawing::Size(133, 43);
 			this->label3->TabIndex = 20;
 			this->label3->Text = L"Tokens";
 			// 
 			// labelFile
 			// 
 			this->labelFile->AutoSize = true;
-			this->labelFile->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->labelFile->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->labelFile->Location = System::Drawing::Point(542, 484);
 			this->labelFile->Name = L"labelFile";
-			this->labelFile->Size = System::Drawing::Size(169, 33);
+			this->labelFile->Size = System::Drawing::Size(191, 35);
 			this->labelFile->TabIndex = 19;
 			this->labelFile->Text = L"Entrada.lya";
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label1->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label1->Location = System::Drawing::Point(37, 52);
+			this->label1->Location = System::Drawing::Point(35, 40);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(109, 33);
+			this->label1->Size = System::Drawing::Size(152, 43);
 			this->label1->TabIndex = 18;
 			this->label1->Text = L"Archivo";
 			// 
@@ -215,11 +215,11 @@ namespace AnalizadorGUI {
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label5->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label5->Location = System::Drawing::Point(717, 40);
+			this->label5->Location = System::Drawing::Point(705, 42);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(265, 33);
+			this->label5->Size = System::Drawing::Size(319, 35);
 			this->label5->TabIndex = 23;
 			this->label5->Text = L"Proceso de analisis";
 			// 
