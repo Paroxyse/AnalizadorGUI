@@ -448,38 +448,34 @@ namespace AnalizadorGUI {
 			return false;
 		case '=':
 			return false;
-		case '\'':
-			return false;
+		/*case '\'':
+			return false;*/
 	/*	case '\"':
 			return false;*/
 		}
 		return true;
 	}
-	bool tickmeme(std::string s, int i)
+	//Esto es tan spaghetti que lo sirven en quinceañeras
+	bool tickmeme(std::string s, int i, int state)
 	{
+		if(state==125)
+		{
+			return false;
+		}
+		if (state == 126)
+		{
+			return false;
+		}
+		if (s.at(i) == '\'')
+		{
+			return true;
+		}
+	
 		if(charaintcursed(s,i))
 		{
 			return true;
 		}
-// figure this sht out
-	if (s.at(i)=='\''&& ((i - 2) >= 0 && s.at(i)!= '\'' ))
-	{
-		return true;
-	}
-	if (s.at(i) == '\'' && i - 2 < 0)
-	{
-		return true;
-	}
-
-	if (s.at(i) == '\'' && ((i - 2) >= 0 && s.at(i) == '\'') && ((i + 2) < s.size() && s.at(i + 2) != '\''))
-	{
 		return false;
-	}
-	if (s.at(i) == '\'' && i + 2 > s.size())
-	{
-		return true;
-	}
-	return false;
 		
 	}
 	bool dtickCount(std::string s)
@@ -517,6 +513,7 @@ namespace AnalizadorGUI {
 			Windows::Forms::MessageBox::Show("La cadena de entrada contiene una string sin cerrar, no se puede realizar el análisis", "Error Crítico");
 			return;
 		}
+		
 		while (i < inString.size())
 		{
 			
@@ -533,12 +530,18 @@ namespace AnalizadorGUI {
 				 //de final
 				if (i == inString.size() - 1 && state < FT.size())
 				{
-					inString.append("\n");
+					state=FT[state][FT[state].size() - 1]; 
+					//XD
+					if (state < FT.size())
+					{
+						inString.append("\n");
+					}
 				}
-
+				
 				if (inString.at(i) != ' ' && inString.at(i) != '\t' && inString.at(i) != '\n' )
 				{
 					currentTokenSize++;
+					
 				}
 				
 				
@@ -588,7 +591,7 @@ namespace AnalizadorGUI {
 				//Revisa si el valor en i es válido, no es un blank space, si el token actual no tiene una longitud de 1 y 
 				//si el estado anterior con este tipo de dato no explota
 				//En serio, este if hace que me sienta mal conmigo mismo
-				if (dataType(inString.at(i), charset) != -1 && currentTokenSize!=1 && (tickmeme(inString,i)))
+				if (dataType(inString.at(i), charset) != -1 && currentTokenSize!=1 && (tickmeme(inString,i,state)))
 				{
 					proceso = proceso.substr(0, proceso.size() - 1);
 					proceso.append("<-cut");
