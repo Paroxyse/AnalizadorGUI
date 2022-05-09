@@ -37,7 +37,7 @@
     <Text Include="TablaT.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="Entrada.txt">
+    <Text Include="Entrada.lya">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="LC.txt">

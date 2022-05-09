@@ -42,7 +42,8 @@ namespace AnalizadorGUI {
 	private: System::Windows::Forms::Label^ label4;
 	protected:
 	private: System::Windows::Forms::Label^ label3;
-	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::Label^ labelFile;
+
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Button^ button4;
 	private: System::Windows::Forms::Button^ button3;
@@ -53,14 +54,14 @@ namespace AnalizadorGUI {
 	private: System::Windows::Forms::RichTextBox^ TBToken;
 	private: System::Windows::Forms::RichTextBox^ TBFile;
 
-
+	//Todos son menos la entrada son txt para que el usuario no pueda desgraciar las funciones, listas y conjuntos desde el sistema :)
 	String ^CharsetName="symb.txt";
 	String ^MayusName="Mayus.txt";
 	String^ MinusName = "Minus.txt";
 	String^ FTName = "TablaT.txt";
 	String^ CLName = "LC.txt";
 	String^ MLName = "LM.txt";
-	String^ Input = "Entrada.txt";
+	String^ Input = "Entrada.lya";
 	private: System::Windows::Forms::RichTextBox^ TBProceso;
 
 	private: System::Windows::Forms::Label^ label5;
@@ -79,7 +80,7 @@ namespace AnalizadorGUI {
 		{
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
-			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->labelFile = (gcnew System::Windows::Forms::Label());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->button4 = (gcnew System::Windows::Forms::Button());
 			this->button3 = (gcnew System::Windows::Forms::Button());
@@ -97,7 +98,7 @@ namespace AnalizadorGUI {
 			this->label4->AutoSize = true;
 			this->label4->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label4->Location = System::Drawing::Point(362, 295);
+			this->label4->Location = System::Drawing::Point(362, 259);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(118, 33);
 			this->label4->TabIndex = 21;
@@ -108,29 +109,29 @@ namespace AnalizadorGUI {
 			this->label3->AutoSize = true;
 			this->label3->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label3->Location = System::Drawing::Point(362, 76);
+			this->label3->Location = System::Drawing::Point(362, 40);
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(104, 33);
 			this->label3->TabIndex = 20;
 			this->label3->Text = L"Tokens";
 			// 
-			// label2
+			// labelFile
 			// 
-			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->labelFile->AutoSize = true;
+			this->labelFile->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label2->Location = System::Drawing::Point(37, 88);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(159, 33);
-			this->label2->TabIndex = 19;
-			this->label2->Text = L"archivo.txt";
+			this->labelFile->Location = System::Drawing::Point(542, 484);
+			this->labelFile->Name = L"labelFile";
+			this->labelFile->Size = System::Drawing::Size(169, 33);
+			this->labelFile->TabIndex = 19;
+			this->labelFile->Text = L"Entrada.lya";
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
 			this->label1->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label1->Location = System::Drawing::Point(37, 35);
+			this->label1->Location = System::Drawing::Point(37, 52);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(109, 33);
 			this->label1->TabIndex = 18;
@@ -138,7 +139,7 @@ namespace AnalizadorGUI {
 			// 
 			// button4
 			// 
-			this->button4->Location = System::Drawing::Point(43, 581);
+			this->button4->Location = System::Drawing::Point(43, 545);
 			this->button4->Name = L"button4";
 			this->button4->Size = System::Drawing::Size(100, 40);
 			this->button4->TabIndex = 17;
@@ -148,7 +149,7 @@ namespace AnalizadorGUI {
 			// 
 			// button3
 			// 
-			this->button3->Location = System::Drawing::Point(366, 513);
+			this->button3->Location = System::Drawing::Point(366, 477);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(100, 40);
 			this->button3->TabIndex = 16;
@@ -158,7 +159,7 @@ namespace AnalizadorGUI {
 			// 
 			// button2
 			// 
-			this->button2->Location = System::Drawing::Point(216, 513);
+			this->button2->Location = System::Drawing::Point(216, 477);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(100, 40);
 			this->button2->TabIndex = 15;
@@ -168,7 +169,7 @@ namespace AnalizadorGUI {
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(43, 513);
+			this->button1->Location = System::Drawing::Point(43, 477);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(100, 40);
 			this->button1->TabIndex = 14;
@@ -178,23 +179,25 @@ namespace AnalizadorGUI {
 			// 
 			// TBError
 			// 
-			this->TBError->Location = System::Drawing::Point(368, 343);
+			this->TBError->Location = System::Drawing::Point(368, 307);
 			this->TBError->Name = L"TBError";
+			this->TBError->ReadOnly = true;
 			this->TBError->Size = System::Drawing::Size(280, 150);
 			this->TBError->TabIndex = 13;
 			this->TBError->Text = L"";
 			// 
 			// TBToken
 			// 
-			this->TBToken->Location = System::Drawing::Point(368, 124);
+			this->TBToken->Location = System::Drawing::Point(368, 88);
 			this->TBToken->Name = L"TBToken";
+			this->TBToken->ReadOnly = true;
 			this->TBToken->Size = System::Drawing::Size(280, 150);
 			this->TBToken->TabIndex = 12;
 			this->TBToken->Text = L"";
 			// 
 			// TBFile
 			// 
-			this->TBFile->Location = System::Drawing::Point(43, 124);
+			this->TBFile->Location = System::Drawing::Point(43, 88);
 			this->TBFile->Name = L"TBFile";
 			this->TBFile->Size = System::Drawing::Size(273, 369);
 			this->TBFile->TabIndex = 11;
@@ -202,8 +205,9 @@ namespace AnalizadorGUI {
 			// 
 			// TBProceso
 			// 
-			this->TBProceso->Location = System::Drawing::Point(713, 124);
+			this->TBProceso->Location = System::Drawing::Point(713, 88);
 			this->TBProceso->Name = L"TBProceso";
+			this->TBProceso->ReadOnly = true;
 			this->TBProceso->Size = System::Drawing::Size(273, 369);
 			this->TBProceso->TabIndex = 22;
 			this->TBProceso->Text = L"";
@@ -213,7 +217,7 @@ namespace AnalizadorGUI {
 			this->label5->AutoSize = true;
 			this->label5->Font = (gcnew System::Drawing::Font(L"Digital-7", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label5->Location = System::Drawing::Point(717, 76);
+			this->label5->Location = System::Drawing::Point(717, 40);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(265, 33);
 			this->label5->TabIndex = 23;
@@ -223,12 +227,12 @@ namespace AnalizadorGUI {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1048, 661);
+			this->ClientSize = System::Drawing::Size(1044, 631);
 			this->Controls->Add(this->label5);
 			this->Controls->Add(this->TBProceso);
 			this->Controls->Add(this->label4);
 			this->Controls->Add(this->label3);
-			this->Controls->Add(this->label2);
+			this->Controls->Add(this->labelFile);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->button4);
 			this->Controls->Add(this->button3);
@@ -237,8 +241,13 @@ namespace AnalizadorGUI {
 			this->Controls->Add(this->TBError);
 			this->Controls->Add(this->TBToken);
 			this->Controls->Add(this->TBFile);
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
+			this->MaximizeBox = false;
+			this->MaximumSize = System::Drawing::Size(1060, 670);
+			this->MinimumSize = System::Drawing::Size(1060, 670);
 			this->Name = L"MyForm";
-			this->Text = L"Analizador gamer";
+			this->Text = L"Analizador léxico";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -426,7 +435,7 @@ namespace AnalizadorGUI {
 		}
 
 	}
-	//Este método de 100 líneas se llevó un pedacito de mi alma cuando lo escribí
+	//Revisa si un caracter no arruina mi salud mental
 	bool charaintcursed(std::string s, int i) 
 	{
 		switch (s.at(i)) 
@@ -446,6 +455,19 @@ namespace AnalizadorGUI {
 		}
 		return true;
 	}
+	bool dtickCount(std::string s)
+	{
+		int count = 0;
+		for (int i = 0; i < s.size(); i++) 
+		{
+			if (s.at(i) == '\"') 
+			{
+				count++;
+			}
+		}
+		return count % 2;
+	}
+	//Este método de 100 líneas se llevó un pedacito de mi alma cuando lo escribí
 	void analizar(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList)
 	{
 		std::vector<std::vector<int>> FT{};
@@ -462,6 +484,12 @@ namespace AnalizadorGUI {
 		std::string outputtoken = "";
 		std::string proceso = "";
 		inString = LeerArc(inputString);
+		if(dtickCount(inString))
+		{
+			//This error message is the biggest programming meme of my life
+			Windows::Forms::MessageBox::Show("La cadena de entrada contiene una string sin cerrar, no se puede realizar el análisis", "Error Crítico");
+			return;
+		}
 		while (i < inString.size())
 		{
 			
@@ -507,7 +535,7 @@ namespace AnalizadorGUI {
 				}
 				else 
 				{
-					outputtoken.append("Error"+std::to_string(state)+"\n");
+					outputtoken.append("Error "+std::to_string(state)+"\n");
 					outputerror.append(std::to_string(state) + ": " + mList.at(ItemIndex) +" en: "+std::to_string(i) + "\n");
 				}
 
@@ -556,10 +584,20 @@ namespace AnalizadorGUI {
 		//cout << "\n" << output;
 
 	}
+	//Limpia los cuadros de texto
+	void limpiar(bool clearfile)
+	{
+		if (clearfile) 
+		{
+			TBFile->Text = "";
+		}
+		TBError->Text = "";		
+		TBToken->Text = "";
 
+	}
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
-		
+		limpiar(true);
 		OpenFileDialog ofd;
 		ofd.InitialDirectory="C:";
 		ofd.Title="Abrir Archivo";
@@ -567,21 +605,23 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 	
 		ofd.ShowDialog();
 		Input = ofd.FileName;
-		
-		
+		labelFile->Text = Input;
+		TBFile->Text = convertirUM(LeerArc(convertirMU(Input)));
 		//Load Method
 		
 	}
-private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-	/*String ^test = "awa";
-	std::string s;
-	s = convertirMU(test);
-	test = "";
-	test = convertirUM(s);
-	label1->Text = test;*/
-}
+private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+	std::string storedstr = convertirMU(TBFile->Text);
+	std::ofstream out(convertirMU(Input));
+	out << storedstr;
+	out.close();
+	System::Windows::Forms::MessageBox::Show("Archivo Guardado","Bottom Text");
+	
+	}
 private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) 
-{
+	{
+	limpiar(false);
 	std::string inputString = convertirMU(Input);
 	std::string charset = convertirMU(CharsetName);
 	std::string TFunc = convertirMU(FTName);
@@ -589,13 +629,23 @@ private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e
 	std::string MessageListFileName = convertirMU(MLName);
 	analizar(inputString,charset,TFunc,CodeListFileName,MessageListFileName);
 
-}
-private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-	//Métodos propios
-	
+	}
+private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+	limpiar(true);
+	Input = "Entrada.lya";
+	labelFile->Text = Input;
+	//cargar entrada.txt a la textbox
+	TBFile->Text = convertirUM(LeerArc(convertirMU(Input)));
+	}
+	  
+	   
 	  
 
 
+private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) 
+	{
+	TBFile->Text = convertirUM(LeerArc(convertirMU(Input)));
+	}
 };
 }
