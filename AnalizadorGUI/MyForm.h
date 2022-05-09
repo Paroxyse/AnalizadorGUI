@@ -450,10 +450,37 @@ namespace AnalizadorGUI {
 			return false;
 		case '\'':
 			return false;
-		case '\"':
-			return false;
+	/*	case '\"':
+			return false;*/
 		}
 		return true;
+	}
+	bool tickmeme(std::string s, int i)
+	{
+		if(charaintcursed(s,i))
+		{
+			return true;
+		}
+// figure this sht out
+	if (s.at(i)=='\''&& ((i - 2) >= 0 && s.at(i)!= '\'' ))
+	{
+		return true;
+	}
+	if (s.at(i) == '\'' && i - 2 < 0)
+	{
+		return true;
+	}
+
+	if (s.at(i) == '\'' && ((i - 2) >= 0 && s.at(i) == '\'') && ((i + 2) < s.size() && s.at(i + 2) != '\''))
+	{
+		return false;
+	}
+	if (s.at(i) == '\'' && i + 2 > s.size())
+	{
+		return true;
+	}
+	return false;
+		
 	}
 	bool dtickCount(std::string s)
 	{
@@ -476,7 +503,7 @@ namespace AnalizadorGUI {
 	
 		int symb;
 		int i = 0;
-		int lastindex=-1;
+		int lastindex=0;//jaja no hace nada
 		int currentTokenSize=0;
 		
 		std::string inString;
@@ -509,7 +536,7 @@ namespace AnalizadorGUI {
 					inString.append("\n");
 				}
 
-				if (inString.at(i) != ' ' && inString.at(i) != '\t' && inString.at(i) != '\n') 
+				if (inString.at(i) != ' ' && inString.at(i) != '\t' && inString.at(i) != '\n' )
 				{
 					currentTokenSize++;
 				}
@@ -561,7 +588,7 @@ namespace AnalizadorGUI {
 				//Revisa si el valor en i es válido, no es un blank space, si el token actual no tiene una longitud de 1 y 
 				//si el estado anterior con este tipo de dato no explota
 				//En serio, este if hace que me sienta mal conmigo mismo
-				if (dataType(inString.at(i), charset) != -1 && currentTokenSize != 1 && charaintcursed(inString,i))
+				if (dataType(inString.at(i), charset) != -1 && currentTokenSize!=1 && (tickmeme(inString,i)))
 				{
 					proceso = proceso.substr(0, proceso.size() - 1);
 					proceso.append("<-cut");
@@ -638,6 +665,8 @@ private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e
 	}
 private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
+	//Cierra el archivo actual y abre el default
+	//owo
 	limpiar(true);
 	Input = "Entrada.lya";
 	labelFile->Text = Input;
