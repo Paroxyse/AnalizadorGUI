@@ -1,8 +1,0 @@
-Entero
-Real
-Notacion_cientifica
-Caracter-no-esperado
-Se-esperaba-un-digito-despues-del-punto-decimal
-Se-esperaba-un-digito_o_un_simbolo_de_mas_o_menos
-Se-esperaba-un-digito-despues-de-E/e
-Alch-no-se
