@@ -604,8 +604,14 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 		ofd.Filter= "Lya Files (*.lya)|*.lya;";
 	
 		ofd.ShowDialog();
-		Input = ofd.FileName;
-		labelFile->Text = Input;
+		if (ofd.FileName != "") 
+		{
+			Input = ofd.FileName;
+			labelFile->Text = Input;
+			TBFile->Text = convertirUM(LeerArc(convertirMU(Input)));
+			return;
+		}
+		System::Windows::Forms::MessageBox::Show("Escoja archivo o  lo veo feo");
 		TBFile->Text = convertirUM(LeerArc(convertirMU(Input)));
 		//Load Method
 		
