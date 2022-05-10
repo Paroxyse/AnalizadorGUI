@@ -458,19 +458,25 @@ namespace AnalizadorGUI {
 	//Esto es tan spaghetti que lo sirven en quinceañeras
 	bool tickmeme(std::string s, int i, int state)
 	{
-		if(state==125)
+		
+		if(state==125 || state==505)
 		{
 			return false;
 		}
-		if (state == 126)
-		{
-			return false;
-		}
+		
 		if (s.at(i) == '\'')
 		{
 			return true;
 		}
-	
+
+		if (s.at(i) == '\"' && state!=126)
+		{
+			return true;
+		}
+		if(state==507)
+		{
+			return true;
+		}
 		if(charaintcursed(s,i))
 		{
 			return true;

@@ -37,4 +37,4 @@ Se-esperaba-otro-|
 Se-esperaba-un-caracter
 Caracter-no-esperado
 Se-esperaba-comilla-de-cierre
-alch-no-se
+Caracter-desconocido-encontrado
