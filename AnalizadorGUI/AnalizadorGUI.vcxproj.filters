@@ -46,7 +46,7 @@
     <Text Include="LM.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="Cursed.txt">
+    <Text Include="Res.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

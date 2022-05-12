@@ -1,0 +1,17 @@
+class
+endclass
+int
+float
+char
+string
+bool
+if
+else
+do
+while
+input
+output
+def
+to
+break
+loop

@@ -496,6 +496,19 @@ namespace AnalizadorGUI {
 		}
 		return count % 2;
 	}
+	//ez addition, ig
+	int resDet(std::vector<std::string> v, std::string s)
+	{
+	for(int i=0;i<v.size();i++)
+	{
+	if(v.at(i)==s)
+	{
+		return i;
+	}
+	}
+	return -1;
+	}
+
 	//Este método de 100 líneas se llevó un pedacito de mi alma cuando lo escribí
 	void analizar(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList)
 	{
@@ -505,13 +518,14 @@ namespace AnalizadorGUI {
 	
 		int symb;
 		int i = 0;
-		int lastindex=0;//jaja no hace nada
+		int lastindex=-1;
 		int currentTokenSize=0;
 		
 		std::string inString;
 		std::string outputerror = "";
 		std::string outputtoken = "";
 		std::string proceso = "";
+		std::vector<std::string> res = cargarVstring("Res.txt");
 		inString = LeerArc(inputString);
 		if(dtickCount(inString))
 		{
@@ -537,11 +551,13 @@ namespace AnalizadorGUI {
 				if (i == inString.size() - 1 && state < FT.size())
 				{
 					state=FT[state][FT[state].size() - 1]; 
+					
 					//XD
 					if (state < FT.size())
 					{
 						inString.append("\n");
 					}
+					
 				}
 				
 				if (inString.at(i) != ' ' && inString.at(i) != '\t' && inString.at(i) != '\n' )
@@ -567,11 +583,15 @@ namespace AnalizadorGUI {
 
 				if(state<500)
 				{
-					outputtoken.append(mList.at(ItemIndex)+"\n");
+					outputtoken.append(mList.at(ItemIndex));
+				
 				}
 				else 
 				{
-					outputtoken.append("Error "+std::to_string(state)+"\n");
+					outputtoken.append("Error "+std::to_string(state));
+				
+					//outputtoken.append("\n");
+
 					outputerror.append(std::to_string(state) + ": " + mList.at(ItemIndex) +" en: "+std::to_string(i) + "\n");
 				}
 
@@ -581,11 +601,11 @@ namespace AnalizadorGUI {
 				std::replace(outputtoken.begin(), outputtoken.end(), '_', ' ');
 				std::replace(outputtoken.begin(), outputtoken.end(), '-', ' ');
 				//Las dejo adentro del ciclo aunque reduzcan desempeño para que se vea cómo se realiza la acción progresivamente
-				TBError->Text = convertirUM(outputerror);
-				TBToken->Text = convertirUM(outputtoken);
+			
 
 				
 			}
+
 			proceso.append(std::to_string(i) + "\t" + std::to_string(symb) + "\t" + std::to_string(state) + "\t" + inString.at(i));
 			if (state >= 500) 
 			{
@@ -597,7 +617,7 @@ namespace AnalizadorGUI {
 				//Revisa si el valor en i es válido, no es un blank space, si el token actual no tiene una longitud de 1 y 
 				//si el estado anterior con este tipo de dato no explota
 				//En serio, este if hace que me sienta mal conmigo mismo
-				if (dataType(inString.at(i), charset) != -1 && currentTokenSize!=1 && (tickmeme(inString,i,state)))
+				if (dataType(inString.at(i), charset) != -1 && currentTokenSize!=1 && (tickmeme(inString,i,state)) && i != (inString.size() - 1))
 				{
 					proceso = proceso.substr(0, proceso.size() - 1);
 					proceso.append("<-cut");
@@ -606,13 +626,66 @@ namespace AnalizadorGUI {
 					i--;
 				}
 				
+				//Puro spaghetti aquí
+				if (state == 100)
+				{
+					std::string debug;
+					int stuff;
+					int masigual = 0;
+					int mas=0;
+					debug = inString.substr(i - currentTokenSize, i - (i - currentTokenSize));
+					for(masigual=0;masigual<3;masigual++)
+					{
+					if(resDet(res, inString.substr(i + masigual - currentTokenSize, i - (i + mas - currentTokenSize))) != -1)
+					{
+						i += masigual;
+						debug = inString.substr(i - currentTokenSize, i - (i + mas - currentTokenSize));
+						stuff = resDet(res, debug);
+						outputtoken.append(" reconocida, codigo: " + std::to_string(stuff));
+						i -= masigual;
+					}
+					if (masigual >0) 
+					{
+						mas++;
+					}
+					}
+					//Prueba de que sé de la existencia de los ciclos for
+					/*if (resDet(res, inString.substr(i - currentTokenSize, i - (i - currentTokenSize))) != -1)
+					{
+						debug = inString.substr(i - currentTokenSize, i - (i - currentTokenSize));
+						stuff = resDet(res, debug);
+						outputtoken.append(" Reconocida, codigo: " + std::to_string(stuff));
+
+					}
+					if(resDet(res, inString.substr(i + 1 - currentTokenSize, i  - (i - currentTokenSize)))!=-1)
+					{
+						i++;
+						debug = inString.substr(i - currentTokenSize, i - (i - currentTokenSize));
+						stuff = resDet(res, debug);
+						outputtoken.append(" Reconocida, codigo: " + std::to_string(stuff));
+						i--;
+					}
+					if (resDet(res, inString.substr(i + 2 - currentTokenSize, i  - (i + 1 - currentTokenSize))) != -1)
+					{
+						i+=2;
+						debug = inString.substr(i - currentTokenSize, i - (i+1 - currentTokenSize));
+						stuff = resDet(res, debug);
+						outputtoken.append(" Reconocida, codigo: " + std::to_string(stuff));
+						i-=2;
+					}*/
+					
+					
+				}
+				outputtoken.append("\n");
+
 				state = 0;
 				currentTokenSize = 0;
 				
 			}
 			proceso.append("\n");
 			TBProceso->Text = convertirUM(proceso);
-			
+			TBError->Text = convertirUM(outputerror);
+			TBToken->Text = convertirUM(outputtoken);
 			
 			i++;
 		}
