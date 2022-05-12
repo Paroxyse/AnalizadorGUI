@@ -456,9 +456,12 @@ namespace AnalizadorGUI {
 		return true;
 	}
 	//Esto es tan spaghetti que lo sirven en quinceañeras
-	bool tickmeme(std::string s, int i, int state)
+	bool tickmeme(std::string s, int i, int state, std::string charset)
 	{
-		
+		if(state== 100 && dataType(s.at(i),charset)==2)
+		{
+			return false;
+		}
 		if(state==125 || state==505)
 		{
 			return false;
@@ -518,7 +521,7 @@ namespace AnalizadorGUI {
 	
 		int symb;
 		int i = 0;
-		int lastindex=-1;
+		
 		int currentTokenSize=0;
 		
 		std::string inString;
@@ -616,13 +619,13 @@ namespace AnalizadorGUI {
 			{
 				//Revisa si el valor en i es válido, no es un blank space, si el token actual no tiene una longitud de 1 y 
 				//si el estado anterior con este tipo de dato no explota
-				//En serio, este if hace que me sienta mal conmigo mismo
-				if (dataType(inString.at(i), charset) != -1 && currentTokenSize!=1 && (tickmeme(inString,i,state)) && i != (inString.size() - 1))
+			
+				if (dataType(inString.at(i), charset) != -1 && currentTokenSize!=1 && (tickmeme(inString,i,state,charset)) )
 				{
 					proceso = proceso.substr(0, proceso.size() - 1);
 					proceso.append("<-cut");
 				
-					lastindex = i;
+					
 					i--;
 				}
 				
@@ -633,10 +636,13 @@ namespace AnalizadorGUI {
 					int stuff;
 					int masigual = 0;
 					int mas=0;
-					debug = inString.substr(i - currentTokenSize, i - (i - currentTokenSize));
+					//debug = inString.substr(i - currentTokenSize, i - (i - currentTokenSize));
 					for(masigual=0;masigual<3;masigual++)
 					{
-					if(resDet(res, inString.substr(i + masigual - currentTokenSize, i - (i + mas - currentTokenSize))) != -1)
+						int clutterkiller = i + masigual - currentTokenSize;
+						int clutterdeleter= i - (i + mas - currentTokenSize);
+						
+					if( clutterkiller>=0  && resDet(res, inString.substr(clutterkiller, clutterdeleter)) != -1)
 					{
 						i += masigual;
 						debug = inString.substr(i - currentTokenSize, i - (i + mas - currentTokenSize));
@@ -649,31 +655,7 @@ namespace AnalizadorGUI {
 						mas++;
 					}
 					}
-					//Prueba de que sé de la existencia de los ciclos for
-					/*if (resDet(res, inString.substr(i - currentTokenSize, i - (i - currentTokenSize))) != -1)
-					{
-						debug = inString.substr(i - currentTokenSize, i - (i - currentTokenSize));
-						stuff = resDet(res, debug);
-						outputtoken.append(" Reconocida, codigo: " + std::to_string(stuff));
-
-					}
-					if(resDet(res, inString.substr(i + 1 - currentTokenSize, i  - (i - currentTokenSize)))!=-1)
-					{
-						i++;
-						debug = inString.substr(i - currentTokenSize, i - (i - currentTokenSize));
-						stuff = resDet(res, debug);
-						outputtoken.append(" Reconocida, codigo: " + std::to_string(stuff));
-						i--;
-					}
-					if (resDet(res, inString.substr(i + 2 - currentTokenSize, i  - (i + 1 - currentTokenSize))) != -1)
-					{
-						i+=2;
-						debug = inString.substr(i - currentTokenSize, i - (i+1 - currentTokenSize));
-						stuff = resDet(res, debug);
-						outputtoken.append(" Reconocida, codigo: " + std::to_string(stuff));
-						i-=2;
-					}*/
-					
+				
 					
 				}
 				outputtoken.append("\n");
