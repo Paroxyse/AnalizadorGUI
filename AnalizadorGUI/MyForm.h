@@ -62,6 +62,7 @@ namespace AnalizadorGUI {
 	String^ CLName = "LC.txt";
 	String^ MLName = "LM.txt";
 	String^ Input = "Entrada.lya";
+
 	private: System::Windows::Forms::RichTextBox^ TBProceso;
 
 	private: System::Windows::Forms::Label^ label5;
@@ -458,6 +459,7 @@ namespace AnalizadorGUI {
 	//Esto es tan spaghetti que lo sirven en quinceañeras
 	bool tickmeme(std::string s, int i, int state, std::string charset)
 	{
+		
 		if(state== 100 && dataType(s.at(i),charset)==2)
 		{
 			return false;
@@ -471,7 +473,10 @@ namespace AnalizadorGUI {
 		{
 			return true;
 		}
-
+		if (s.at(i) == '\"' && i == s.size() - 1)
+		{
+			return false;
+		}
 		if (s.at(i) == '\"' && state!=126)
 		{
 			return true;
@@ -542,7 +547,7 @@ namespace AnalizadorGUI {
 			
 			symb = dataType(inString.at(i), charset);
 			if (symb == -1) {
-				state = 600;
+				symb = FT[0].size()-1;
 				//cout << i << " " << symb << " " << state << " " << inString.at(i);
 			}
 			if (state < FT.size())
@@ -556,7 +561,7 @@ namespace AnalizadorGUI {
 					state=FT[state][FT[state].size() - 1]; 
 					
 					//XD
-					if (state < FT.size())
+					if (state ==19 || state==18)
 					{
 						inString.append("\n");
 					}
@@ -709,6 +714,7 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 	}
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
+	
 	std::string storedstr = convertirMU(TBFile->Text);
 	std::ofstream out(convertirMU(Input));
 	out << storedstr;
