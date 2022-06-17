@@ -436,61 +436,19 @@ namespace AnalizadorGUI {
 		}
 
 	}
-	//Revisa si un caracter no arruina mi salud mental
-	bool charaintcursed(std::string s, int i) 
+	//Revisa si un estado indica que es necesario regresar una iteración para analizar el caracter actual correctamente
+	//Antes había spaghetti aquí, ahora hay código normal
+	bool cursedState(int state)
 	{
-		switch (s.at(i)) 
+		std::vector<int> x = cargarVint("Returnstate.txt");
+		for (int i=0;i<x.size();i++)
 		{
-		case ' ':
-			return false;
-		case '\t':
-			return false;
-		case '\n':
-			return false;
-		case '=':
-			return false;
-		/*case '\'':
-			return false;*/
-	/*	case '\"':
-			return false;*/
-		}
-		return true;
-	}
-	//Esto es tan spaghetti que lo sirven en quinceañeras
-	bool tickmeme(std::string s, int i, int state, std::string charset)
-	{
-		
-		if(state== 100 && dataType(s.at(i),charset)==2)
-		{
-			return false;
-		}
-		if(state==125 || state==505)
-		{
-			return false;
-		}
-		
-		if (s.at(i) == '\'')
+		if (state== x[i])
 		{
 			return true;
 		}
-		if (s.at(i) == '\"' && i == s.size() - 1)
-		{
-			return false;
-		}
-		if (s.at(i) == '\"' && state!=126)
-		{
-			return true;
-		}
-		if(state==507)
-		{
-			return true;
-		}
-		if(charaintcursed(s,i))
-		{
-			return true;
 		}
 		return false;
-		
 	}
 	bool dtickCount(std::string s)
 	{
@@ -526,13 +484,14 @@ namespace AnalizadorGUI {
 		bool found;
 		int symb;
 		int i = 0;
+		int k = 0;
 		
-		int currentTokenSize=0;
-		int stuff;
+		
 		std::string inString;
 		std::string outputerror = "";
 		std::string outputtoken = "";
 		std::string proceso = "";
+		std::string buffer = "";
 		std::vector<std::string> res = cargarVstring("Res.txt");
 		inString = LeerArc(inputString);
 		int xd=inString.size();
@@ -553,31 +512,23 @@ namespace AnalizadorGUI {
 			}
 			if (state < FT.size())
 			{
+				if (state == 0)
+				{
+					buffer = "";
+				}
+				if (isLetter(inString.at(i))!=-1)
+				{
+					buffer += inString.at(i);
+				}
 				state = FT[state][symb];
-				//cout << i << " " << symb << " " << state << " " << inString.at(i); <--Reemplazar con equivalente en textbox
-				//Si este es el último caracter o si el siguiente estado desde el actual explota, corta el token aquí y salta a un estado
-				 //de final
-				if (i == xd - 1 && state < FT.size())
-				{
-					//state=FT[state][FT[state].size() - 1]; 
-					inString.append("\n");
-					//XD
-				/*	if (state ==19 || state==18)
-					{
-						inString.append("\n");
-					}*/
-					
-				}
-				
-				if (inString.at(i) != ' ' && inString.at(i) != '\t' && inString.at(i) != '\n' )
-				{
-					currentTokenSize++;
-					
-				}
-				
-				
-			}
 			
+				if (i == xd - 1 && state < FT.size())
+				{			
+					inString.append("\n");
+	
+				}			
+			}
+
 			if (state > FT.size())
 			{
 				found = false;
@@ -590,28 +541,12 @@ namespace AnalizadorGUI {
 				{
 					std::string debug;
 					
-					int masigual = 0;
-					int mas = 0;
-					
-					//debug = inString.substr(i - currentTokenSize, i - (i - currentTokenSize));
-					for (masigual = 0; masigual < 3; masigual++)
+					 k=0;
+					k = resDet(res, buffer);
+					if(k!=-1)
 					{
-						int clutterkiller = i + masigual - currentTokenSize;
-						int clutterdeleter = i - (i + mas - currentTokenSize);
-
-						if (clutterkiller >= 0 && resDet(res, inString.substr(clutterkiller, clutterdeleter)) != -1)
-						{
-							i += masigual;
-							debug = inString.substr(i - currentTokenSize, i - (i + mas - currentTokenSize));
-							stuff = resDet(res, debug);
-							//outputtoken.append(" reconocida, codigo: " + std::to_string(stuff));
-							i -= masigual;
-							found = true;
-						}
-						if (masigual > 0)
-						{
-							mas++;
-						}
+						found = true;
+						
 					}
 					if (!found)
 					{
@@ -632,7 +567,7 @@ namespace AnalizadorGUI {
 					outputtoken.append(mList.at(ItemIndex));
 					if(found)
 					{
-						outputtoken.append(" reconocida, codigo: " + std::to_string(stuff));
+						outputtoken.append(" reconocida, codigo: " + std::to_string(k));
 					}
 				}
 				else 
@@ -643,10 +578,7 @@ namespace AnalizadorGUI {
 
 					outputerror.append(std::to_string(state) + ": " + mList.at(ItemIndex) +" en: "+std::to_string(i) + "\n");
 				}
-				/*if (state >= 500)
-				{
-					proceso.append("\t<---");
-				}*/
+
 
 				std::replace(outputerror.begin(), outputerror.end(), '_', ' ');
 				std::replace(outputerror.begin(), outputerror.end(), '-', ' ');
@@ -654,29 +586,20 @@ namespace AnalizadorGUI {
 				std::replace(outputtoken.begin(), outputtoken.end(), '-', ' ');				
 			}
 			proceso.append(std::to_string(i) + "\t" + std::to_string(symb) + "\t" + std::to_string(state) + "\t" + inString.at(i));
-			
-			
-			//Desearía que no tuviera que hacer esta salvajada de ifs pero tengo el cerebro muy frito como para pensar en una solución elegante			
+					
 			if (state > FT.size()) 
 			{
-				//Revisa si el valor en i es válido, no es un blank space, si el token actual no tiene una longitud de 1 y 
-				//si el estado anterior con este tipo de dato no explota
-			
-				if (dataType(inString.at(i), charset) != -1 && currentTokenSize!=1 && (tickmeme(inString,i,state,charset)) )
+
+				if (cursedState(state))
 				{
 					proceso = proceso.substr(0, proceso.size() - 1);
 					proceso.append("<-cut");
-				
-					
+
 					i--;
 				}
 				
-				//Puro spaghetti aquí
-				
 				outputtoken.append("\n");
-
 				state = 0;
-				currentTokenSize = 0;
 				
 			}
 			proceso.append("\n");
@@ -686,8 +609,7 @@ namespace AnalizadorGUI {
 			
 			i++;
 		}
-		//Cambiar por cambio de texto en tboxes
-		//cout << "\n" << output;
+		
 
 	}
 	//Limpia los cuadros de texto

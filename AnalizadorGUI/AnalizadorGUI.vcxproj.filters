@@ -49,5 +49,8 @@
     <Text Include="Res.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="Returnstate.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
