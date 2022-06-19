@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <stack>
 #include <algorithm>
 #include <msclr\marshal_cppstd.h>
 namespace AnalizadorGUI {
@@ -59,6 +60,8 @@ namespace AnalizadorGUI {
 	String ^MayusName="Mayus.txt";
 	String^ MinusName = "Minus.txt";
 	String^ FTName = "TablaT.txt";
+	String^ TPName = "TablaP.txt";
+	String^ MPName = "MatrizP.txt";
 	String^ CLName = "LC.txt";
 	String^ MLName = "LM.txt";
 	String^ Input = "Entrada.lya";
@@ -66,6 +69,7 @@ namespace AnalizadorGUI {
 	private: System::Windows::Forms::RichTextBox^ TBProceso;
 
 	private: System::Windows::Forms::Label^ label5;
+	private: System::Windows::Forms::Button^ button5;
 	private:
 		/// <summary>
 		/// Required designer variable.
@@ -92,6 +96,7 @@ namespace AnalizadorGUI {
 			this->TBFile = (gcnew System::Windows::Forms::RichTextBox());
 			this->TBProceso = (gcnew System::Windows::Forms::RichTextBox());
 			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->button5 = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// label4
@@ -150,11 +155,11 @@ namespace AnalizadorGUI {
 			// 
 			// button3
 			// 
-			this->button3->Location = System::Drawing::Point(366, 477);
+			this->button3->Location = System::Drawing::Point(216, 545);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(100, 40);
 			this->button3->TabIndex = 16;
-			this->button3->Text = L"Analizar";
+			this->button3->Text = L"Analisis lexico";
 			this->button3->UseVisualStyleBackColor = true;
 			this->button3->Click += gcnew System::EventHandler(this, &MyForm::button3_Click);
 			// 
@@ -224,11 +229,22 @@ namespace AnalizadorGUI {
 			this->label5->TabIndex = 23;
 			this->label5->Text = L"Proceso de analisis";
 			// 
+			// button5
+			// 
+			this->button5->Location = System::Drawing::Point(368, 477);
+			this->button5->Name = L"button5";
+			this->button5->Size = System::Drawing::Size(100, 40);
+			this->button5->TabIndex = 24;
+			this->button5->Text = L"Analisis sintactico";
+			this->button5->UseVisualStyleBackColor = true;
+			this->button5->Click += gcnew System::EventHandler(this, &MyForm::button5_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1044, 631);
+			this->Controls->Add(this->button5);
 			this->Controls->Add(this->label5);
 			this->Controls->Add(this->TBProceso);
 			this->Controls->Add(this->label4);
@@ -474,18 +490,144 @@ namespace AnalizadorGUI {
 	}
 	return -1;
 	}
-
+	int predconv(int state)
+	{
+		int aux = state;
+	if(state<500)
+	{
+		aux -= 101;
+		
+	}
+	else
+	{
+		aux -= 450;
+	}
+	return aux;
+	}
+	std::vector<std::vector<int>> lul() 
+	{
+		std::vector<std::vector<int>> aux = { 
+	{	1	,	131	,	101	,	129	,	2	,	130	}
+,	{	149	,	101	,	123	,	1	}
+,	{	-200	}
+,	{	4	,	3	}
+,	{	5	,	3	}
+,	{	2	}
+,	{	-200	}
+,	{	14	,	123	}
+,	{	20	,	123	}
+,	{	23	,	123	}
+,	{	24	,	123	}
+,	{	25	,	123	}
+,	{	27	,	123	}
+,	{	29	,	123	}
+,	{	6	,	123	}
+,	{	146	,	123	}
+,	{	-200	}
+,	{	129	,	2	,	130	}
+,	{	144	,	11	,	7	,	148	,	8	}
+,	{	124	,	11	,	7	}
+,	{	-200	}
+,	{	133	}
+,	{	134	}
+,	{	135	}
+,	{	136	}
+,	{	137	}
+,	{	121	,	102	,	10	,	122	}
+,	{	124	,	102	,	10	}
+,	{	-200	}
+,	{	12	,	13	}
+,	{	9	}
+,	{	-200	}
+,	{	101	}
+,	{	15	,	109	,	30	}
+,	{	16	,	17	}
+,	{	18	}
+,	{	-200	}
+,	{	101	}
+,	{	121	,	30	,	19	,	122	}
+,	{	124	,	30	,	19	}
+,	{	-200	}
+,	{	21	,	22	}
+,	{	138	,	119	,	30	,	120	,	2	}
+,	{	139	,	2	}
+,	{	-200	}
+,	{	141	,	119	,	30	,	120	,	2	}
+,	{	140	,	2	,	150	,	119	,	30	,	120	}
+,	{	142	,	119	,	101	,	26	,	120	}
+,	{	124	,	101	,	26	}
+,	{	-200	}
+,	{	143	,	119	,	30	,	28	,	120	}
+,	{	124	,	30	,	28	}
+,	{	-200	}
+,	{	147	,	2	}
+,	{	31	,	32	}
+,	{	33	}
+,	{	118	,	30	}
+,	{	-200	}
+,	{	34	,	35	}
+,	{	36	}
+,	{	117	,	33	}
+,	{	-200	}
+,	{	116	,	37	}
+,	{	37	}
+,	{	38	,	39	}
+,	{	41	}
+,	{	40	,	41	}
+,	{	-200	}
+,	{	110	}
+,	{	115	}
+,	{	111	}
+,	{	112	}
+,	{	113	}
+,	{	114	}
+,	{	43	,	42	}
+,	{	105	,	41	}
+,	{	106	,	41	}
+,	{	-200	}
+,	{	45	,	44	}
+,	{	107	,	43	}
+,	{	108	,	43	}
+,	{	128	,	43	}
+,	{	-200	}
+,	{	15	}
+,	{	102	}
+,	{	103	}
+,	{	104	}
+,	{	125	}
+,	{	126	}
+,	{	119	,	30	,	120	}
+			
+		
+		};
+		
+		return aux;
+	}
 	//Este método de 100 líneas se llevó un pedacito de mi alma cuando lo escribí
-	void analizar(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList)
+	void analizar(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList, bool synt)
 	{
 		std::vector<std::vector<int>> FT{};
+		std::stack<int> st;
+		std::vector<std::vector<int>> MP{};
+		std::vector<std::vector<int>> TP{};
 		FT = cargarFT(TFunc);
+		if(synt)
+		{
+			
+			//st.push(-50);
+			st.push(0);
+
+		
+			MP = cargarFT(convertirMU(MPName));
+			TP = lul();
+		}
 		int state = 0;
 		bool found;
+		bool fileendfound = false;
 		int symb;
 		int i = 0;
-		int k = 0;
-		
+		int rescode = 0;
+		int topcode, debug;
 		
 		std::string inString;
 		std::string outputerror = "";
@@ -495,17 +637,17 @@ namespace AnalizadorGUI {
 		std::vector<std::string> res = cargarVstring("Res.txt");
 		inString = LeerArc(inputString);
 		int xd=inString.size();
-		if(dtickCount(inString))
-		{
-			//This error message is the biggest programming meme of my life
-			Windows::Forms::MessageBox::Show("La cadena de entrada contiene una string sin cerrar, no se puede realizar el análisis", "Error Crítico");
-			return;
-		}
+	
 		
 		while (i < inString.size())
 		{
 			
 			symb = dataType(inString.at(i), charset);
+			if (i == xd - 1)
+			{
+				fileendfound = true;
+
+			}
 			if (symb == -1) {
 				symb = FT[0].size()-1;
 				//cout << i << " " << symb << " " << state << " " << inString.at(i);
@@ -528,7 +670,6 @@ namespace AnalizadorGUI {
 	
 				}			
 			}
-
 			if (state > FT.size())
 			{
 				found = false;
@@ -541,9 +682,9 @@ namespace AnalizadorGUI {
 				{
 					std::string debug;
 					
-					 k=0;
-					k = resDet(res, buffer);
-					if(k!=-1)
+					 rescode=0;
+					rescode = resDet(res, buffer);
+					if(rescode!=-1)
 					{
 						found = true;
 						
@@ -567,7 +708,7 @@ namespace AnalizadorGUI {
 					outputtoken.append(mList.at(ItemIndex));
 					if(found)
 					{
-						outputtoken.append(" reconocida, codigo: " + std::to_string(k));
+						outputtoken.append(" reconocida, codigo: " + std::to_string(rescode));
 					}
 				}
 				else 
@@ -587,7 +728,7 @@ namespace AnalizadorGUI {
 			}
 			proceso.append(std::to_string(i) + "\t" + std::to_string(symb) + "\t" + std::to_string(state) + "\t" + inString.at(i));
 					
-			if (state > FT.size()) 
+			if (state > FT.size())
 			{
 
 				if (cursedState(state))
@@ -597,8 +738,105 @@ namespace AnalizadorGUI {
 
 					i--;
 				}
-				
 				outputtoken.append("\n");
+				// if bool true then do Syntactic
+				if(synt)
+				{
+					bool loop = true;
+					if (state == 100) 
+					{
+						state += 31 + rescode;
+					}
+
+					//for(int j=0;j<TP.size();j++)
+					//{
+					//for(int k=0;k<TP[j].size();k++)
+					//{
+					//if(TP[j][k]>100)
+					//{
+					//	TP[j][k]--;
+					//}
+					//}
+					//}
+					//state = predconv(state);
+					while(loop)
+					{
+						//valida para cuando la wea esté vacía pls
+						if (!st.empty())
+						{
+							topcode = st.top();
+							st.pop();
+						}
+					
+						//topcode = st.top();
+						
+
+						if(fileendfound && topcode ==-50)
+						{
+							
+								Windows::Forms::MessageBox::Show("Archivo analizado exitosamente " +topcode, "Nice");
+								loop = false;
+						
+							
+						}
+					/*	if (topcode==-50 && !fileendfound || topcode != -50 && fileendfound)
+						{
+							Windows::Forms::MessageBox::Show("Fin de archivo esperado "+topcode, "Not nice");
+							loop = false;
+						}*/
+
+						int prod;
+						
+					
+						// si es una producción
+						if(topcode <90 && topcode >=0)
+						{
+							
+							
+							prod = MP[topcode][predconv(state)];
+							debug = predconv(state);
+							//Windows::Forms::MessageBox::Show("test " + debug, "Error xd");
+							if (prod < 0)
+							{
+								Windows::Forms::MessageBox::Show("Error en matriz predictiva", "Error xd");
+								Windows::Forms::MessageBox::Show(""+prod+" "+topcode+" "+predconv(state), "Error xd");
+								return;
+							}
+							//st.pop();
+							//Windows::Forms::MessageBox::Show(prod + "", "xd");
+							//Windows::Forms::MessageBox::Show(TP[prod].size() + "", "xd");
+							for (int j = TP[prod].size() - 1; j >= 0; j--)
+							{
+								//Windows::Forms::MessageBox::Show(TP[prod][j]+"", "xd");
+								st.push(TP[prod][j]);
+							}
+						}
+						//si es un token
+						if(topcode >= 100)
+						{
+							
+							if (topcode==state)
+							{
+							//st.pop();
+							//Windows::Forms::MessageBox::Show("" + prod + " " + topcode + " " + state, "Error xd");
+							loop = false;
+							
+							}else
+							{
+								Windows::Forms::MessageBox::Show("Error encontrando token", "Error xd");
+								Windows::Forms::MessageBox::Show("" + prod + " " + topcode + " " + state, "Error xd");
+								return;
+							}
+							
+						}
+						
+			
+						
+						
+				
+						
+					}
+				}
 				state = 0;
 				
 			}
@@ -662,7 +900,7 @@ private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e
 	std::string TFunc = convertirMU(FTName);
 	std::string CodeListFileName = convertirMU(CLName);
 	std::string MessageListFileName = convertirMU(MLName);
-	analizar(inputString,charset,TFunc,CodeListFileName,MessageListFileName);
+	analizar(inputString,charset,TFunc,CodeListFileName,MessageListFileName,false);
 
 	}
 private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) 
@@ -683,6 +921,17 @@ private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e
 private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) 
 	{
 	TBFile->Text = convertirUM(LeerArc(convertirMU(Input)));
+	}
+private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+	limpiar(false);
+	std::string inputString = convertirMU(Input);
+	std::string charset = convertirMU(CharsetName);
+	std::string TFunc = convertirMU(FTName);
+	std::string CodeListFileName = convertirMU(CLName);
+	std::string MessageListFileName = convertirMU(MLName);
+	analizar(inputString, charset, TFunc, CodeListFileName, MessageListFileName, true);
+
 	}
 };
 }

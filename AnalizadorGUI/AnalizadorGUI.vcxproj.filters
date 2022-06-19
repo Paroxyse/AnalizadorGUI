@@ -52,5 +52,11 @@
     <Text Include="Returnstate.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="MatrizP.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="TablaP.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
