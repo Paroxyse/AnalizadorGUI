@@ -506,6 +506,7 @@ namespace AnalizadorGUI {
 	}
 	std::vector<std::vector<int>> lul() 
 	{
+		//cargué esta cosa aquí porque pensaba que estaba causando un error, resultó no ser culpa de esto, pero no lo he cambiado xd
 		std::vector<std::vector<int>> aux = { 
 	{	1	,	131	,	101	,	129	,	2	,	130	}
 ,	{	149	,	101	,	123	,	1	}
@@ -611,19 +612,22 @@ namespace AnalizadorGUI {
 		std::vector<std::vector<int>> MP{};
 		std::vector<std::vector<int>> TP{};
 		FT = cargarFT(TFunc);
+		//parte del sintáctico
 		if(synt)
 		{
 			
-			//st.push(-50);
+			st.push(-50);
 			st.push(0);
 
 		
 			MP = cargarFT(convertirMU(MPName));
 			TP = lul();
 		}
+		// parte del sintáctico
 		int state = 0;
 		bool found;
 		bool fileendfound = false;
+		bool stempty = false;
 		int symb;
 		int i = 0;
 		int rescode = 0;
@@ -643,7 +647,7 @@ namespace AnalizadorGUI {
 		{
 			
 			symb = dataType(inString.at(i), charset);
-			if (i == xd - 1)
+			if (i==xd-1)
 			{
 				fileendfound = true;
 
@@ -667,7 +671,7 @@ namespace AnalizadorGUI {
 				if (i == xd - 1 && state < FT.size())
 				{			
 					inString.append("\n");
-	
+					
 				}			
 			}
 			if (state > FT.size())
@@ -739,7 +743,7 @@ namespace AnalizadorGUI {
 					i--;
 				}
 				outputtoken.append("\n");
-				// if bool true then do Syntactic
+				// parte del sintáctico
 				if(synt)
 				{
 					bool loop = true;
@@ -748,18 +752,8 @@ namespace AnalizadorGUI {
 						state += 31 + rescode;
 					}
 
-					//for(int j=0;j<TP.size();j++)
-					//{
-					//for(int k=0;k<TP[j].size();k++)
-					//{
-					//if(TP[j][k]>100)
-					//{
-					//	TP[j][k]--;
-					//}
-					//}
-					//}
-					//state = predconv(state);
-					while(loop)
+			
+					while(loop && !stempty)
 					{
 						//valida para cuando la wea esté vacía pls
 						if (!st.empty())
@@ -767,24 +761,29 @@ namespace AnalizadorGUI {
 							topcode = st.top();
 							st.pop();
 						}
-					
-						//topcode = st.top();
-						
-
-						if(fileendfound && topcode ==-50)
+						if (st.empty())
 						{
-							
-								Windows::Forms::MessageBox::Show("Archivo analizado exitosamente " +topcode, "Nice");
-								loop = false;
-						
-							
-						}
-					/*	if (topcode==-50 && !fileendfound || topcode != -50 && fileendfound)
-						{
-							Windows::Forms::MessageBox::Show("Fin de archivo esperado "+topcode, "Not nice");
+							Windows::Forms::MessageBox::Show("Usted ha escrito después de un fin de un archivo válido, no se tomará en cuenta nada después de la llave de cierre", "Error parcial: Fin de archivo esperado");
 							loop = false;
-						}*/
+							stempty = true;
+						}
+						//topcode = st.top();
+						if (fileendfound)
+						{
 
+
+							if (topcode == -50)
+							{
+								Windows::Forms::MessageBox::Show("Archivo analizado exitosamente ", "Nice");
+								loop = false;
+							}
+
+
+
+
+						}
+
+				
 						int prod;
 						
 					
@@ -817,11 +816,11 @@ namespace AnalizadorGUI {
 							
 							if (topcode==state)
 							{
-							//st.pop();
-							//Windows::Forms::MessageBox::Show("" + prod + " " + topcode + " " + state, "Error xd");
+							
 							loop = false;
 							
-							}else
+							}
+							if(topcode!=state)
 							{
 								Windows::Forms::MessageBox::Show("Error encontrando token", "Error xd");
 								Windows::Forms::MessageBox::Show("" + prod + " " + topcode + " " + state, "Error xd");
@@ -830,6 +829,7 @@ namespace AnalizadorGUI {
 							
 						}
 						
+						
 			
 						
 						
@@ -837,6 +837,7 @@ namespace AnalizadorGUI {
 						
 					}
 				}
+				// parte del sintáctico
 				state = 0;
 				
 			}
@@ -846,6 +847,23 @@ namespace AnalizadorGUI {
 			TBToken->Text = convertirUM(outputtoken);
 			
 			i++;
+		}
+		if (synt) 
+		{
+			
+			while (!st.empty())
+			{
+				if(st.top() != -50) 
+				{
+					Windows::Forms::MessageBox::Show(st.top() + "", "No sé la vdd");
+					
+				}else
+				{
+					Windows::Forms::MessageBox::Show("Archivo analizado exitosamente ", "Análisis completo");
+				}
+				st.pop();
+			}
+
 		}
 		
 
