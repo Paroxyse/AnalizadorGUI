@@ -223,11 +223,11 @@ namespace AnalizadorGUI {
 			this->label5->AutoSize = true;
 			this->label5->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label5->Location = System::Drawing::Point(705, 42);
+			this->label5->Location = System::Drawing::Point(722, 40);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(319, 35);
+			this->label5->Size = System::Drawing::Size(255, 35);
 			this->label5->TabIndex = 23;
-			this->label5->Text = L"Proceso de analisis";
+			this->label5->Text = L"Análisis léxico";
 			// 
 			// button5
 			// 
@@ -613,7 +613,7 @@ namespace AnalizadorGUI {
 			s = "La gramática de este lenguaje no permite comentarios de línea";
 			break;
 		case -101:
-			s = "Error sintáctico encontrado";
+			s = "Error léxico encontrado";
 			break;
 		case -100:
 		case -1:
@@ -865,7 +865,7 @@ namespace AnalizadorGUI {
 				}
 				outputtoken.append("\n");
 				// parte del sintáctico
-				if(synt)
+				if(synt && state !=127)
 				{
 					bool loop = true;
 					if (state == 100) 
@@ -876,7 +876,7 @@ namespace AnalizadorGUI {
 			
 					while(loop && !stempty)
 					{
-						//valida para cuando la wea esté vacía pls
+					
 						if (!st.empty())
 						{
 							topcode = st.top();
@@ -884,7 +884,7 @@ namespace AnalizadorGUI {
 						}
 						if (st.empty())
 						{
-							//No me vea feo profe, la gramática no incluye analizar varias clases en un solo archivo
+							//:^]
 							Windows::Forms::MessageBox::Show("Usted ha escrito después de un fin de un archivo válido, no se tomará en cuenta nada después de la llave de cierre", "Error parcial: Fin de archivo esperado");
 							loop = false;
 							stempty = true;
@@ -964,12 +964,12 @@ namespace AnalizadorGUI {
 		//parte del sintáctico
 		if (synt) 
 		{
-			
-			while (!st.empty())
+			//could be an if
+			if (!st.empty())
 			{
 				if(st.top() != -50) 
 				{
-					Windows::Forms::MessageBox::Show(st.top() + "", "No sé que pasó la vdd");
+					Windows::Forms::MessageBox::Show("Se ha llegado al final del archivo sin terminar de analizar un programa válido", "Error");
 					return;
 					
 				}else
@@ -992,6 +992,7 @@ namespace AnalizadorGUI {
 		}
 		TBError->Text = "";		
 		TBToken->Text = "";
+		TBProceso->Text = "";
 
 	}
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) 
@@ -1066,5 +1067,7 @@ private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e
 	analizar(inputString, charset, TFunc, CodeListFileName, MessageListFileName, true);
 
 	}
+
+
 };
 }
