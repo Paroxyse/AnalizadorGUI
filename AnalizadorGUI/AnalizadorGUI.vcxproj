@@ -147,7 +147,6 @@
     <Text Include="Res.txt" />
     <Text Include="Returnstate.txt" />
     <Text Include="MatrizP.txt" />
-    <Text Include="TablaP.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -604,6 +604,127 @@ namespace AnalizadorGUI {
 		
 		return aux;
 	}
+	void syntaxerror(int err)
+	{
+		String^ s = "";
+		switch (err)
+		{
+		case 102:
+			s = "La gramática de este lenguaje no permite comentarios de línea";
+			break;
+		case 101:
+			s = "Error sintáctico encontrado";
+			break;
+		case -100:
+		case -1:
+			s = "Se esperaba class o lib";
+			break;
+		case -2:
+		case -3:
+			s = "Se esperaba Id, ; , { , }, break, eval o el inicio de un estatuto";
+			break;
+		case -4:
+			s = "Se esperaba Id, ; , }, break, eval o el inicio de un estatuto";
+			break;
+		case -5:
+			s = "Se esperaba llave de apertura";
+			break;
+		case -6:
+			s = "Se esperaba def";
+			break;
+		case -7:
+			s = "Se esperaba una coma o un \"of\"";
+			break;
+		case -8:
+			s = "Se esperaba un tipo de dato válido";
+			break;
+		case -9:
+		case -18:
+			s = "Se esperaba un corchete de apertura [";
+			break;
+		case -10:
+		case -19:
+			s = "Se esperaba una coma o un corchete de cierre ] ";
+			break;
+		case -11:
+		case -12:
+		case -14:
+		case -15:
+		case -16:
+			s = "Se esperaba un identificador";
+			break;
+		case -13:
+			s = "Se esperaba una coma, un corchete de apertura o un \"of\"";
+				break;
+		case -17:
+			s = "Se esperaba un operador, paréntesis de cierre, corchetes o una coma";
+			break;
+		case -20:
+		case -21:
+			s = "Se esperaba un if";
+			break;
+		case -22:
+			s = "Se esperaba un else o un punto y coma";
+			break;
+		case -23:
+			s = "Se esperaba un while";
+			break;
+		case -24:
+			s = "Se esperaba un do";
+			break;
+		case -25:
+			s = "Se esperaba un input";
+			break;
+		case -26:
+		case -28:
+			s = "Se esperaba una coma o un paréntesis de cierre";
+			break;
+		case -27:
+			s = "Se esperaba un output";
+			break;
+		case -29:
+			s = "Se esperaba un loop";
+			break;
+		case -30:
+		case -31:
+		case -33:
+		case -34:
+		case -36:
+			s = "Se esperaba una constante, un identificador, un ! o un paréntesis de apertura";
+			break;
+		case -32:
+			s = "Se esperaba un ||, ), ] ; o una coma";
+			break;
+		case -35:
+			s = "Se esperaba un &&,||, ), ] ; o una coma";
+			break;
+		case -37:
+		case -38:
+		case -41:
+		case -43:
+		case -45:
+			s = "Se esperaba una constante, un identificador, o un paréntesis de apertura";
+			break;
+		case -39:
+		
+			s = "Se esperaba un operador relacional, &&,||, ), ] ; o una coma";
+			break;
+		case -40:
+			s = "Se esperaba un operador relacional";
+			break;
+		case -42:
+			s = "Se esperaba suma, resta, un operador relacional, &&,||, ), ] ; o una coma";
+			break;
+		case -44:
+			s = "Se esperaba un operador, &&,||, ), ] ; o una coma";
+			break;
+	
+		default:
+			s = "No sé que se esperaba, pero no lo pusiste :)";
+			break;
+		}
+		Windows::Forms::MessageBox::Show(s, "Error encontrado");
+	}
 	//Este método de 100 líneas se llevó un pedacito de mi alma cuando lo escribí
 	void analizar(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList, bool synt)
 	{
@@ -763,24 +884,18 @@ namespace AnalizadorGUI {
 						}
 						if (st.empty())
 						{
+							//No me vea feo profe, la gramática no incluye analizar varias clases en un solo archivo
 							Windows::Forms::MessageBox::Show("Usted ha escrito después de un fin de un archivo válido, no se tomará en cuenta nada después de la llave de cierre", "Error parcial: Fin de archivo esperado");
 							loop = false;
 							stempty = true;
 						}
-						//topcode = st.top();
 						if (fileendfound)
 						{
-
-
 							if (topcode == -50)
 							{
 								Windows::Forms::MessageBox::Show("Archivo analizado exitosamente ", "Nice");
 								loop = false;
 							}
-
-
-
-
 						}
 
 				
@@ -797,8 +912,9 @@ namespace AnalizadorGUI {
 							//Windows::Forms::MessageBox::Show("test " + debug, "Error xd");
 							if (prod < 0)
 							{
-								Windows::Forms::MessageBox::Show("Error en matriz predictiva", "Error xd");
-								Windows::Forms::MessageBox::Show(""+prod+" "+topcode+" "+predconv(state), "Error xd");
+								/*Windows::Forms::MessageBox::Show("Error en matriz predictiva", "Error xd");
+								Windows::Forms::MessageBox::Show(""+prod+" "+topcode+" "+predconv(state), "Error xd");*/
+								syntaxerror(prod);
 								return;
 							}
 							//st.pop();
@@ -848,6 +964,7 @@ namespace AnalizadorGUI {
 			
 			i++;
 		}
+		//parte del sintáctico
 		if (synt) 
 		{
 			
@@ -855,7 +972,8 @@ namespace AnalizadorGUI {
 			{
 				if(st.top() != -50) 
 				{
-					Windows::Forms::MessageBox::Show(st.top() + "", "No sé la vdd");
+					Windows::Forms::MessageBox::Show(st.top() + "", "No sé que pasó la vdd");
+					return;
 					
 				}else
 				{
@@ -865,7 +983,7 @@ namespace AnalizadorGUI {
 			}
 
 		}
-		
+		//parte del sintáctico
 
 	}
 	//Limpia los cuadros de texto
