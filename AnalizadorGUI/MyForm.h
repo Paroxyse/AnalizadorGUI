@@ -609,10 +609,10 @@ namespace AnalizadorGUI {
 		String^ s = "";
 		switch (err)
 		{
-		case 102:
+		case -102:
 			s = "La gramática de este lenguaje no permite comentarios de línea";
 			break;
-		case 101:
+		case -101:
 			s = "Error sintáctico encontrado";
 			break;
 		case -100:
@@ -725,7 +725,7 @@ namespace AnalizadorGUI {
 		}
 		Windows::Forms::MessageBox::Show(s, "Error encontrado");
 	}
-	//Este método de 100 líneas se llevó un pedacito de mi alma cuando lo escribí
+	
 	void analizar(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList, bool synt)
 	{
 		std::vector<std::vector<int>> FT{};
@@ -775,7 +775,7 @@ namespace AnalizadorGUI {
 			}
 			if (symb == -1) {
 				symb = FT[0].size()-1;
-				//cout << i << " " << symb << " " << state << " " << inString.at(i);
+				
 			}
 			if (state < FT.size())
 			{
@@ -903,26 +903,23 @@ namespace AnalizadorGUI {
 						
 					
 						// si es una producción
-						if(topcode <90 && topcode >=0)
+						if (topcode < 90 && topcode >= 0)
 						{
-							
-							
+
+
 							prod = MP[topcode][predconv(state)];
 							debug = predconv(state);
-							//Windows::Forms::MessageBox::Show("test " + debug, "Error xd");
+							
 							if (prod < 0)
 							{
-								/*Windows::Forms::MessageBox::Show("Error en matriz predictiva", "Error xd");
-								Windows::Forms::MessageBox::Show(""+prod+" "+topcode+" "+predconv(state), "Error xd");*/
+							
 								syntaxerror(prod);
 								return;
 							}
-							//st.pop();
-							//Windows::Forms::MessageBox::Show(prod + "", "xd");
-							//Windows::Forms::MessageBox::Show(TP[prod].size() + "", "xd");
+						
 							for (int j = TP[prod].size() - 1; j >= 0; j--)
 							{
-								//Windows::Forms::MessageBox::Show(TP[prod][j]+"", "xd");
+								
 								st.push(TP[prod][j]);
 							}
 						}
@@ -938,8 +935,8 @@ namespace AnalizadorGUI {
 							}
 							if(topcode!=state)
 							{
-								Windows::Forms::MessageBox::Show("Error encontrando token", "Error xd");
-								Windows::Forms::MessageBox::Show("" + prod + " " + topcode + " " + state, "Error xd");
+								Windows::Forms::MessageBox::Show("Token no esperado encontrado", "Error");
+								Windows::Forms::MessageBox::Show("Producción: " + prod + "\nToken esperado: " + topcode + "\nToken encontrado: " + state, "Error");
 								return;
 							}
 							

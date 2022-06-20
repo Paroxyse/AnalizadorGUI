@@ -26,9 +26,7 @@ Global
 		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Debug|x64.ActiveCfg = Debug
 		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Debug|x86.ActiveCfg = Debug
 		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Release|x64.ActiveCfg = Release
-		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Release|x64.Build.0 = Release
 		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Release|x86.ActiveCfg = Release
-		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
