@@ -14,7 +14,7 @@ class mia
           output("ya valio"); ;
 
 owo="awa";
-owo=1;
+owo= awa*owo;
        while ( Y<=1.0);
 
 }

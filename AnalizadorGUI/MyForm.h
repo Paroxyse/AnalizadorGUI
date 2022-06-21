@@ -723,7 +723,7 @@ namespace AnalizadorGUI {
 			s = "No sé que se esperaba, pero no lo pusiste :)";
 			break;
 		}
-		Windows::Forms::MessageBox::Show(s, "Error encontrado");
+		Windows::Forms::MessageBox::Show(s, "Error "+err);
 	}
 	
 	void analizar(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList, bool synt)
@@ -964,7 +964,7 @@ namespace AnalizadorGUI {
 		//parte del sintáctico
 		if (synt) 
 		{
-			//could be an if
+			
 			if (!st.empty())
 			{
 				if(st.top() != -50) 
