@@ -1,20 +1,15 @@
-lib iio;
-lib wea;
-
-class mia
+class eterno
 {
+     def X, Y of float;
 
-       def X, Y of int;
-       input(X, Y);
-       res = 30 * 1.0e10;
-           Dato[i] = '@';
-  if (res != X)
-          output("ni le busques"); 
-       else
-          output("ya valio"); ;
-
-owo="awa";
-owo= awa*owo;
-       while ( Y<=1.0);
+    
+    loop
+    {
+          output ("Dame un valor cualquiera, terminará cuando le de -1");
+          input (X);
+          if (X == -1)
+             break;
+          ;       
+    };
 
 }
