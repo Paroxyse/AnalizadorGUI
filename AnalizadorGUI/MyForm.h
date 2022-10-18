@@ -11,6 +11,7 @@ namespace AnalizadorGUI {
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
+	using namespace System::Collections::Generic;
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
@@ -65,6 +66,10 @@ namespace AnalizadorGUI {
 	String^ CLName = "LC.txt";
 	String^ MLName = "LM.txt";
 	String^ Input = "Entrada.lya";
+
+	List<int>^ tokenlist =  gcnew List<int>();
+	List<String^>^ tokenliststr = gcnew List<String^>();
+
 
 	private: System::Windows::Forms::RichTextBox^ TBProceso;
 
@@ -728,8 +733,10 @@ namespace AnalizadorGUI {
 	
 	void analizar(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList, bool synt)
 	{
+		tokenlist->Clear();
+		tokenliststr->Clear();
 		std::vector<std::vector<int>> FT{};
-		std::stack<int> st;
+		std::stack<int> stack_sint;
 		std::vector<std::vector<int>> MP{};
 		std::vector<std::vector<int>> TP{};
 		FT = cargarFT(TFunc);
@@ -737,8 +744,8 @@ namespace AnalizadorGUI {
 		if(synt)
 		{
 			
-			st.push(-50);
-			st.push(0);
+			stack_sint.push(-50);
+			stack_sint.push(0);
 
 		
 			MP = cargarFT(convertirMU(MPName));
@@ -783,7 +790,7 @@ namespace AnalizadorGUI {
 				{
 					buffer = "";
 				}
-				if (isLetter(inString.at(i))!=-1)
+				if (isLetter(inString.at(i))!=-1 || isNumber(inString.at(i))!=-1)
 				{
 					buffer += inString.at(i);
 				}
@@ -877,12 +884,12 @@ namespace AnalizadorGUI {
 					while(loop && !stempty)
 					{
 					
-						if (!st.empty())
+						if (!stack_sint.empty())
 						{
-							topcode = st.top();
-							st.pop();
+							topcode = stack_sint.top();
+							stack_sint.pop();
 						}
-						if (st.empty())
+						if (stack_sint.empty())
 						{
 							//:^]
 							Windows::Forms::MessageBox::Show("Usted ha escrito después de un fin de un archivo válido, no se tomará en cuenta nada después de la llave de cierre", "Error parcial: Fin de archivo esperado");
@@ -920,7 +927,7 @@ namespace AnalizadorGUI {
 							for (int j = TP[prod].size() - 1; j >= 0; j--)
 							{
 								
-								st.push(TP[prod][j]);
+								stack_sint.push(TP[prod][j]);
 							}
 						}
 						//si es un token
@@ -941,16 +948,12 @@ namespace AnalizadorGUI {
 							}
 							
 						}
-						
-						
-			
-						
-						
-				
-						
+		
 					}
 				}
 				// parte del sintáctico
+				tokenlist->Add(state);
+				tokenliststr->Add(convertirUM(buffer));
 				state = 0;
 				
 			}
@@ -961,13 +964,14 @@ namespace AnalizadorGUI {
 			
 			i++;
 		}
+		
 		//parte del sintáctico
 		if (synt) 
 		{
-			
-			if (!st.empty())
+			//Windows::Forms::MessageBox::Show(tokenliststr[1],"debug");
+			if (!stack_sint.empty())
 			{
-				if(st.top() != -50) 
+				if(stack_sint.top() != -50) 
 				{
 					Windows::Forms::MessageBox::Show("Se ha llegado al final del archivo sin terminar de analizar un programa válido", "Error");
 					return;
@@ -976,12 +980,116 @@ namespace AnalizadorGUI {
 				{
 					Windows::Forms::MessageBox::Show("Archivo analizado exitosamente ", "Análisis completo");
 				}
-				st.pop();
+				stack_sint.pop();
 			}
 
 		}
 		//parte del sintáctico
 
+	}
+	bool synt(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList)
+	{
+		
+		analizar(inputString, charset, TFunc, CodeList, MessageList, false); 
+		//Windows::Forms::MessageBox::Show(tokenlist[tokenlist->Count - 1] + "", "debug");
+		std::vector<std::vector<int>> FT{};
+		std::vector<std::string> res = cargarVstring("Res.txt");
+		std::stack<int> stack_sint;
+		std::vector<std::vector<int>> MP{};
+		std::vector<std::vector<int>> TP{};
+		int state = 0;
+		
+		bool fileendfound = false;
+		bool stempty = false;
+		
+		int i = 0;
+		int rescode = 0;
+		int topcode, debug;
+		FT = cargarFT(TFunc);
+			stack_sint.push(-50);
+			stack_sint.push(0);
+			MP = cargarFT(convertirMU(MPName));
+			TP = lul();
+			while (tokenlist->Count > 0) {
+				state = tokenlist[0];
+				if (state != 127)
+				{
+					rescode = 0;
+					rescode = resDet(res, convertirMU(tokenliststr[0]));
+					bool loop = true;
+					if (state == 100)
+					{
+						state += 31 + rescode;
+					}
+
+
+					while (loop && !stempty)
+					{
+
+						if (!stack_sint.empty())
+						{
+							topcode = stack_sint.top();
+							stack_sint.pop();
+						}
+						if (stack_sint.empty())
+						{
+							//:^]
+							Windows::Forms::MessageBox::Show("Usted ha escrito después de un fin de un archivo válido, no se tomará en cuenta nada después de la llave de cierre", "Error parcial: Fin de archivo esperado");
+							
+							loop = false;
+							stempty = true;
+							return true;
+						}
+				
+
+
+						int prod;
+
+
+						// si es una producción
+						if (topcode < 90 && topcode >= 0)
+						{
+
+							prod = MP[topcode][predconv(state)];
+							debug = predconv(state);
+
+							//Windows::Forms::MessageBox::Show(prod + " "+topcode+" "+state, "debug");
+							if (prod < 0)
+							{
+
+								syntaxerror(prod);
+								return false;
+							}
+							for (int j = TP[prod].size() - 1; j >= 0; j--)
+							{
+								stack_sint.push(TP[prod][j]);
+							}
+						}
+						//si es un token
+						if (topcode >= 100)
+						{
+
+							if (topcode == state)
+							{
+
+								loop = false;
+
+							}
+							if (topcode != state)
+							{
+								Windows::Forms::MessageBox::Show("Token no esperado encontrado", "Error");
+								Windows::Forms::MessageBox::Show("Producción: " + prod + "\nToken esperado: " + topcode + "\nToken encontrado: " + state, "Error");
+								return false;
+							}
+
+						}
+					}
+				}
+				tokenlist->RemoveAt(0);
+				tokenliststr->RemoveAt(0);
+			}			
+				Windows::Forms::MessageBox::Show("Archivo analizado exitosamente ", "Nice");
+				return true;		
 	}
 	//Limpia los cuadros de texto
 	void limpiar(bool clearfile)
@@ -1064,8 +1172,8 @@ private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e
 	std::string TFunc = convertirMU(FTName);
 	std::string CodeListFileName = convertirMU(CLName);
 	std::string MessageListFileName = convertirMU(MLName);
-	analizar(inputString, charset, TFunc, CodeListFileName, MessageListFileName, true);
-
+	//analizar(inputString, charset, TFunc, CodeListFileName, MessageListFileName, true);
+	synt(inputString, charset, TFunc, CodeListFileName, MessageListFileName);
 	}
 
 

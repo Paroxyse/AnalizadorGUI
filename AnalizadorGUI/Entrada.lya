@@ -1,8 +1,8 @@
-class eterno
+class eterno1
 {
      def X, Y of float;
 
-    
+    a=a+a;
     loop
     {
           output ("Dame un valor cualquiera, terminará cuando le de -1");
@@ -13,3 +13,5 @@ class eterno
     };
 
 }
+
+ 
