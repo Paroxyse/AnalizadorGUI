@@ -75,6 +75,25 @@ namespace AnalizadorGUI {
 
 	private: System::Windows::Forms::Label^ label5;
 	private: System::Windows::Forms::Button^ button5;
+	private: System::Windows::Forms::DataGridView^ dataGridView1;
+	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ numCuad;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Operador;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Op1;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Op2;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Res;
+	private: System::Windows::Forms::ListView^ LVSTOP;
+	private: System::Windows::Forms::ListView^ LSTVOPN;
+	private: System::Windows::Forms::ListView^ LSTVJMP;
+	private: System::Windows::Forms::DataGridView^ dataGridView2;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OpDT;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ TipoDT;
+	private: System::Windows::Forms::Label^ label6;
+	private: System::Windows::Forms::Label^ label7;
+	private: System::Windows::Forms::Label^ label8;
+	private: System::Windows::Forms::Label^ label9;
+	private: System::Windows::Forms::Button^ button6;
+	private: System::Windows::Forms::Button^ button7;
 	private:
 		/// <summary>
 		/// Required designer variable.
@@ -102,6 +121,27 @@ namespace AnalizadorGUI {
 			this->TBProceso = (gcnew System::Windows::Forms::RichTextBox());
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->button5 = (gcnew System::Windows::Forms::Button());
+			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->numCuad = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Operador = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Op1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Op2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Res = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->LVSTOP = (gcnew System::Windows::Forms::ListView());
+			this->LSTVOPN = (gcnew System::Windows::Forms::ListView());
+			this->LSTVJMP = (gcnew System::Windows::Forms::ListView());
+			this->dataGridView2 = (gcnew System::Windows::Forms::DataGridView());
+			this->OpDT = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->TipoDT = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->label7 = (gcnew System::Windows::Forms::Label());
+			this->label8 = (gcnew System::Windows::Forms::Label());
+			this->label9 = (gcnew System::Windows::Forms::Label());
+			this->button6 = (gcnew System::Windows::Forms::Button());
+			this->button7 = (gcnew System::Windows::Forms::Button());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// label4
@@ -109,7 +149,7 @@ namespace AnalizadorGUI {
 			this->label4->AutoSize = true;
 			this->label4->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label4->Location = System::Drawing::Point(362, 259);
+			this->label4->Location = System::Drawing::Point(335, 261);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(152, 43);
 			this->label4->TabIndex = 21;
@@ -120,7 +160,7 @@ namespace AnalizadorGUI {
 			this->label3->AutoSize = true;
 			this->label3->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label3->Location = System::Drawing::Point(362, 40);
+			this->label3->Location = System::Drawing::Point(335, 40);
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(133, 43);
 			this->label3->TabIndex = 20;
@@ -131,7 +171,7 @@ namespace AnalizadorGUI {
 			this->labelFile->AutoSize = true;
 			this->labelFile->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->labelFile->Location = System::Drawing::Point(542, 484);
+			this->labelFile->Location = System::Drawing::Point(37, 604);
 			this->labelFile->Name = L"labelFile";
 			this->labelFile->Size = System::Drawing::Size(191, 35);
 			this->labelFile->TabIndex = 19;
@@ -150,7 +190,7 @@ namespace AnalizadorGUI {
 			// 
 			// button4
 			// 
-			this->button4->Location = System::Drawing::Point(43, 545);
+			this->button4->Location = System::Drawing::Point(43, 536);
 			this->button4->Name = L"button4";
 			this->button4->Size = System::Drawing::Size(100, 40);
 			this->button4->TabIndex = 17;
@@ -160,7 +200,7 @@ namespace AnalizadorGUI {
 			// 
 			// button3
 			// 
-			this->button3->Location = System::Drawing::Point(216, 545);
+			this->button3->Location = System::Drawing::Point(343, 477);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(100, 40);
 			this->button3->TabIndex = 16;
@@ -170,7 +210,7 @@ namespace AnalizadorGUI {
 			// 
 			// button2
 			// 
-			this->button2->Location = System::Drawing::Point(216, 477);
+			this->button2->Location = System::Drawing::Point(161, 477);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(100, 40);
 			this->button2->TabIndex = 15;
@@ -190,7 +230,7 @@ namespace AnalizadorGUI {
 			// 
 			// TBError
 			// 
-			this->TBError->Location = System::Drawing::Point(368, 307);
+			this->TBError->Location = System::Drawing::Point(343, 307);
 			this->TBError->Name = L"TBError";
 			this->TBError->ReadOnly = true;
 			this->TBError->Size = System::Drawing::Size(280, 150);
@@ -199,7 +239,7 @@ namespace AnalizadorGUI {
 			// 
 			// TBToken
 			// 
-			this->TBToken->Location = System::Drawing::Point(368, 88);
+			this->TBToken->Location = System::Drawing::Point(343, 88);
 			this->TBToken->Name = L"TBToken";
 			this->TBToken->ReadOnly = true;
 			this->TBToken->Size = System::Drawing::Size(280, 150);
@@ -216,10 +256,10 @@ namespace AnalizadorGUI {
 			// 
 			// TBProceso
 			// 
-			this->TBProceso->Location = System::Drawing::Point(713, 88);
+			this->TBProceso->Location = System::Drawing::Point(657, 88);
 			this->TBProceso->Name = L"TBProceso";
 			this->TBProceso->ReadOnly = true;
-			this->TBProceso->Size = System::Drawing::Size(273, 369);
+			this->TBProceso->Size = System::Drawing::Size(249, 369);
 			this->TBProceso->TabIndex = 22;
 			this->TBProceso->Text = L"";
 			// 
@@ -228,7 +268,7 @@ namespace AnalizadorGUI {
 			this->label5->AutoSize = true;
 			this->label5->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label5->Location = System::Drawing::Point(722, 40);
+			this->label5->Location = System::Drawing::Point(651, 46);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(255, 35);
 			this->label5->TabIndex = 23;
@@ -236,7 +276,7 @@ namespace AnalizadorGUI {
 			// 
 			// button5
 			// 
-			this->button5->Location = System::Drawing::Point(368, 477);
+			this->button5->Location = System::Drawing::Point(449, 477);
 			this->button5->Name = L"button5";
 			this->button5->Size = System::Drawing::Size(100, 40);
 			this->button5->TabIndex = 24;
@@ -244,11 +284,191 @@ namespace AnalizadorGUI {
 			this->button5->UseVisualStyleBackColor = true;
 			this->button5->Click += gcnew System::EventHandler(this, &MyForm::button5_Click);
 			// 
+			// dataGridView1
+			// 
+			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(5) {
+				this->numCuad,
+					this->Operador, this->Op1, this->Op2, this->Res
+			});
+			this->dataGridView1->Location = System::Drawing::Point(926, 88);
+			this->dataGridView1->Name = L"dataGridView1";
+			this->dataGridView1->Size = System::Drawing::Size(373, 369);
+			this->dataGridView1->TabIndex = 25;
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label2->Location = System::Drawing::Point(1023, 46);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(175, 35);
+			this->label2->TabIndex = 26;
+			this->label2->Text = L"Cuádruplos";
+			// 
+			// numCuad
+			// 
+			this->numCuad->HeaderText = L"#";
+			this->numCuad->Name = L"numCuad";
+			this->numCuad->ReadOnly = true;
+			this->numCuad->Width = 40;
+			// 
+			// Operador
+			// 
+			this->Operador->HeaderText = L"Operador";
+			this->Operador->Name = L"Operador";
+			this->Operador->ReadOnly = true;
+			this->Operador->Width = 50;
+			// 
+			// Op1
+			// 
+			this->Op1->HeaderText = L"Op1";
+			this->Op1->Name = L"Op1";
+			this->Op1->ReadOnly = true;
+			this->Op1->Width = 80;
+			// 
+			// Op2
+			// 
+			this->Op2->HeaderText = L"Op2";
+			this->Op2->Name = L"Op2";
+			this->Op2->ReadOnly = true;
+			this->Op2->Width = 80;
+			// 
+			// Res
+			// 
+			this->Res->HeaderText = L"Res";
+			this->Res->Name = L"Res";
+			this->Res->ReadOnly = true;
+			this->Res->Width = 80;
+			// 
+			// LVSTOP
+			// 
+			this->LVSTOP->HideSelection = false;
+			this->LVSTOP->Location = System::Drawing::Point(926, 485);
+			this->LVSTOP->Name = L"LVSTOP";
+			this->LVSTOP->Size = System::Drawing::Size(373, 40);
+			this->LVSTOP->TabIndex = 27;
+			this->LVSTOP->UseCompatibleStateImageBehavior = false;
+			// 
+			// LSTVOPN
+			// 
+			this->LSTVOPN->HideSelection = false;
+			this->LSTVOPN->Location = System::Drawing::Point(926, 553);
+			this->LSTVOPN->Name = L"LSTVOPN";
+			this->LSTVOPN->Size = System::Drawing::Size(373, 40);
+			this->LSTVOPN->TabIndex = 28;
+			this->LSTVOPN->UseCompatibleStateImageBehavior = false;
+			// 
+			// LSTVJMP
+			// 
+			this->LSTVJMP->HideSelection = false;
+			this->LSTVJMP->Location = System::Drawing::Point(926, 619);
+			this->LSTVJMP->Name = L"LSTVJMP";
+			this->LSTVJMP->Size = System::Drawing::Size(373, 40);
+			this->LSTVJMP->TabIndex = 29;
+			this->LSTVJMP->UseCompatibleStateImageBehavior = false;
+			// 
+			// dataGridView2
+			// 
+			this->dataGridView2->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridView2->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) { this->OpDT, this->TipoDT });
+			this->dataGridView2->Location = System::Drawing::Point(657, 509);
+			this->dataGridView2->Name = L"dataGridView2";
+			this->dataGridView2->Size = System::Drawing::Size(244, 150);
+			this->dataGridView2->TabIndex = 30;
+			// 
+			// OpDT
+			// 
+			this->OpDT->HeaderText = L"Operando";
+			this->OpDT->Name = L"OpDT";
+			this->OpDT->ReadOnly = true;
+			// 
+			// TipoDT
+			// 
+			this->TipoDT->HeaderText = L"Tipo";
+			this->TipoDT->Name = L"TipoDT";
+			this->TipoDT->ReadOnly = true;
+			// 
+			// label6
+			// 
+			this->label6->AutoSize = true;
+			this->label6->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label6->Location = System::Drawing::Point(651, 474);
+			this->label6->Name = L"label6";
+			this->label6->Size = System::Drawing::Size(210, 32);
+			this->label6->TabIndex = 31;
+			this->label6->Text = L"Tabla de tipos";
+			// 
+			// label7
+			// 
+			this->label7->AutoSize = true;
+			this->label7->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label7->Location = System::Drawing::Point(921, 457);
+			this->label7->Name = L"label7";
+			this->label7->Size = System::Drawing::Size(177, 25);
+			this->label7->TabIndex = 32;
+			this->label7->Text = L"Pila Operadores";
+			// 
+			// label8
+			// 
+			this->label8->AutoSize = true;
+			this->label8->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label8->Location = System::Drawing::Point(921, 525);
+			this->label8->Name = L"label8";
+			this->label8->Size = System::Drawing::Size(166, 25);
+			this->label8->TabIndex = 33;
+			this->label8->Text = L"Pila Operandos";
+			// 
+			// label9
+			// 
+			this->label9->AutoSize = true;
+			this->label9->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label9->Location = System::Drawing::Point(921, 593);
+			this->label9->Name = L"label9";
+			this->label9->Size = System::Drawing::Size(133, 25);
+			this->label9->TabIndex = 34;
+			this->label9->Text = L"Pila Saltos";
+			// 
+			// button6
+			// 
+			this->button6->Location = System::Drawing::Point(343, 523);
+			this->button6->Name = L"button6";
+			this->button6->Size = System::Drawing::Size(100, 40);
+			this->button6->TabIndex = 35;
+			this->button6->Text = L"Análisis semántico";
+			this->button6->UseVisualStyleBackColor = true;
+			// 
+			// button7
+			// 
+			this->button7->Location = System::Drawing::Point(449, 521);
+			this->button7->Name = L"button7";
+			this->button7->Size = System::Drawing::Size(100, 40);
+			this->button7->TabIndex = 36;
+			this->button7->Text = L"Generación de código";
+			this->button7->UseVisualStyleBackColor = true;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1044, 631);
+			this->ClientSize = System::Drawing::Size(1324, 681);
+			this->Controls->Add(this->button7);
+			this->Controls->Add(this->button6);
+			this->Controls->Add(this->label9);
+			this->Controls->Add(this->label8);
+			this->Controls->Add(this->label7);
+			this->Controls->Add(this->label6);
+			this->Controls->Add(this->dataGridView2);
+			this->Controls->Add(this->LSTVJMP);
+			this->Controls->Add(this->LSTVOPN);
+			this->Controls->Add(this->LVSTOP);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->dataGridView1);
 			this->Controls->Add(this->button5);
 			this->Controls->Add(this->label5);
 			this->Controls->Add(this->TBProceso);
@@ -265,11 +485,13 @@ namespace AnalizadorGUI {
 			this->Controls->Add(this->TBFile);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->MaximizeBox = false;
-			this->MaximumSize = System::Drawing::Size(1060, 670);
-			this->MinimumSize = System::Drawing::Size(1060, 670);
+			this->MaximumSize = System::Drawing::Size(1340, 720);
+			this->MinimumSize = System::Drawing::Size(1340, 720);
 			this->Name = L"MyForm";
-			this->Text = L"Analizador léxico";
+			this->Text = L"Compilador de juguete";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -1175,6 +1397,7 @@ private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e
 	//analizar(inputString, charset, TFunc, CodeListFileName, MessageListFileName, true);
 	synt(inputString, charset, TFunc, CodeListFileName, MessageListFileName);
 	}
+
 
 
 };
