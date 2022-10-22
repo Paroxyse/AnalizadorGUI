@@ -2,7 +2,10 @@ class eterno1
 {
      def X, Y of float;
      def class1 of int;
+     def bola of bool;
 X=1.1;
+X=X+1.1*2;
+bola= X>=11.1;
 }
 
  

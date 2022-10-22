@@ -1483,7 +1483,7 @@ namespace AnalizadorGUI {
 		CuadDGV->Rows->Add(Cuadcount + " ", Operator, Operands[Operands->Count - 2], Operands[Operands->Count - 1], "R" + rescount);
 		Operands->RemoveAt(Operands->Count - 1);
 		Operands->RemoveAt(Operands->Count - 1);
-		OperandTypeList->Remove(OperandTypeList->Count - 1);
+		OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
 		OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
 		Operators->RemoveAt(Operators->Count - 1);
 		Operands->Add("R" + rescount);
@@ -1499,7 +1499,7 @@ namespace AnalizadorGUI {
 	{
 		if(OperandTypeList[OperandTypeList->Count-1]!= OperandTypeList[OperandTypeList->Count - 2])
 		{
-			s += "Error entre tipos en asignación a ";
+			s += "Error entre tipos en asignación a "+ Operands[Operands->Count-2]+", "+ Operands[Operands->Count - 1]+ " "+OperandTypeList[OperandTypeList->Count-2]+ " "+OperandTypeList[OperandTypeList->Count - 1];
 		}
 		CuadDGV->Rows->Add(Cuadcount + " ", "=", Operands[Operands->Count - 2],"Nada xD", Operands[Operands->Count - 1]);
 		Operands->RemoveAt(Operands->Count - 1);
@@ -1669,19 +1669,53 @@ namespace AnalizadorGUI {
 
 				}
 			}
-			if (token == 110 || token ==115 /* == != */)
+			
+			if(token>=110 && token <= 115/* == !=  < <= > <= */)
 			{
+				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!=" ||
+					Operators[Operators->Count - 1] == "<" || Operators[Operators->Count - 1] == "<=" 
+					|| Operators[Operators->Count - 1] == ">" || Operators[Operators->Count - 1] == ">=" 
+					|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" 
+					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+				{
+					rescount++; Cuadcount++;
+					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
-			}
-			if(token>=111 && token <= 114/* < <= > <= */)
-			{
+				}
+
+				switch (token)
+				{
+				case 110:
+					Operators->Add("==");
+					break;
+				case 111:
+					Operators->Add("<");
+					break;
+				case 112:
+					Operators->Add("<=");
+					break;
+				case 113:
+					Operators->Add(">");
+					break;
+				case 114:
+					Operators->Add(">=");
+					break;
+				case 115:
+					Operators->Add("!=");
+					break;
+				}
+				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 			}
 			if(token==123/*semicolon ;*/)
 			{
 				if (mff->Count > 0) {
 					mff->Pop();
 				}
-				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!=" ||
+					Operators[Operators->Count - 1] == "<" || Operators[Operators->Count - 1] == "<="
+					|| Operators[Operators->Count - 1] == ">" || Operators[Operators->Count - 1] == ">="
+					|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*"
+					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 				{
 					rescount++; Cuadcount++;
 					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
