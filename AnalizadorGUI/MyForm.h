@@ -72,6 +72,10 @@ namespace AnalizadorGUI {
 
 	List<String^>^ varlist= gcnew List<String^>();
 	List<char>^ varTypeList = gcnew List<char>();
+	List<String^>^ Operators = gcnew List<String^>();
+	List<String^>^ Operands = gcnew List<String^>();
+	List<char>^ OperandTypeList = gcnew List<char>();
+	List<int>^ Jumps = gcnew List<int>();
 
 	private: System::Windows::Forms::RichTextBox^ TBProceso;
 
@@ -87,7 +91,8 @@ namespace AnalizadorGUI {
 	private: System::Windows::Forms::ListView^ LVSTOP;
 	private: System::Windows::Forms::ListView^ LSTVOPN;
 	private: System::Windows::Forms::ListView^ LSTVJMP;
-	private: System::Windows::Forms::DataGridView^ dataGridView2;
+	private: System::Windows::Forms::DataGridView^ TablaTipos;
+
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OpDT;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ TipoDT;
 	private: System::Windows::Forms::Label^ label6;
@@ -124,16 +129,16 @@ namespace AnalizadorGUI {
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->button5 = (gcnew System::Windows::Forms::Button());
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
-			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->numCuad = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Operador = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Op1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Op2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Res = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->LVSTOP = (gcnew System::Windows::Forms::ListView());
 			this->LSTVOPN = (gcnew System::Windows::Forms::ListView());
 			this->LSTVJMP = (gcnew System::Windows::Forms::ListView());
-			this->dataGridView2 = (gcnew System::Windows::Forms::DataGridView());
+			this->TablaTipos = (gcnew System::Windows::Forms::DataGridView());
 			this->OpDT = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->TipoDT = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->label6 = (gcnew System::Windows::Forms::Label());
@@ -143,7 +148,7 @@ namespace AnalizadorGUI {
 			this->button6 = (gcnew System::Windows::Forms::Button());
 			this->button7 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->TablaTipos))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// label4
@@ -298,17 +303,6 @@ namespace AnalizadorGUI {
 			this->dataGridView1->Size = System::Drawing::Size(373, 369);
 			this->dataGridView1->TabIndex = 25;
 			// 
-			// label2
-			// 
-			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label2->Location = System::Drawing::Point(1023, 46);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(175, 35);
-			this->label2->TabIndex = 26;
-			this->label2->Text = L"Cuádruplos";
-			// 
 			// numCuad
 			// 
 			this->numCuad->HeaderText = L"#";
@@ -344,6 +338,17 @@ namespace AnalizadorGUI {
 			this->Res->ReadOnly = true;
 			this->Res->Width = 80;
 			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Font = (gcnew System::Drawing::Font(L"Cascadia Code", 20.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label2->Location = System::Drawing::Point(1023, 46);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(175, 35);
+			this->label2->TabIndex = 26;
+			this->label2->Text = L"Cuádruplos";
+			// 
 			// LVSTOP
 			// 
 			this->LVSTOP->HideSelection = false;
@@ -371,14 +376,14 @@ namespace AnalizadorGUI {
 			this->LSTVJMP->TabIndex = 29;
 			this->LSTVJMP->UseCompatibleStateImageBehavior = false;
 			// 
-			// dataGridView2
+			// TablaTipos
 			// 
-			this->dataGridView2->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView2->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) { this->OpDT, this->TipoDT });
-			this->dataGridView2->Location = System::Drawing::Point(657, 509);
-			this->dataGridView2->Name = L"dataGridView2";
-			this->dataGridView2->Size = System::Drawing::Size(244, 150);
-			this->dataGridView2->TabIndex = 30;
+			this->TablaTipos->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->TablaTipos->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) { this->OpDT, this->TipoDT });
+			this->TablaTipos->Location = System::Drawing::Point(657, 509);
+			this->TablaTipos->Name = L"TablaTipos";
+			this->TablaTipos->Size = System::Drawing::Size(244, 150);
+			this->TablaTipos->TabIndex = 30;
 			// 
 			// OpDT
 			// 
@@ -444,6 +449,7 @@ namespace AnalizadorGUI {
 			this->button6->TabIndex = 35;
 			this->button6->Text = L"Análisis semántico";
 			this->button6->UseVisualStyleBackColor = true;
+			this->button6->Click += gcnew System::EventHandler(this, &MyForm::button6_Click);
 			// 
 			// button7
 			// 
@@ -465,7 +471,7 @@ namespace AnalizadorGUI {
 			this->Controls->Add(this->label8);
 			this->Controls->Add(this->label7);
 			this->Controls->Add(this->label6);
-			this->Controls->Add(this->dataGridView2);
+			this->Controls->Add(this->TablaTipos);
 			this->Controls->Add(this->LSTVJMP);
 			this->Controls->Add(this->LSTVOPN);
 			this->Controls->Add(this->LVSTOP);
@@ -493,7 +499,7 @@ namespace AnalizadorGUI {
 			this->Text = L"Compilador de juguete";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->TablaTipos))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -1380,15 +1386,271 @@ namespace AnalizadorGUI {
 		}
 		return 'X';
 	}
+	char OpResTypeError(char Op1, char Op2, int Op)
+	{
+		std::vector<char> lista = { 'E','E','E','F','E','B','B','B' };
+		int col;
+		switch (Op)
+		{
+		case 107:
+			col = 0;
+			break;
+		case 106:
+			col = 1;
+			break;
+		case 105:
+			col = 2;
+			break;
+		case 108:
+			col = 3;
+			break;
+		case 128:
+			col = 4;
+			break;
 
+		case 111:
+		case 112:
+		case 113:
+		case 114:
+			col = 5;
+			break;
+		case 110:
+		case 115:
+			col = 6;
+		case 117:
+		case 118:
+			col = 7;
+			break;
+		default:
+			System::Windows::Forms::MessageBox::Show("Eso no es un operando de verdad, viejón");
+			return 'X';
+		}
+		return lista[col];
+	}
+	bool AlreadyExists(String^ s)
+	{
+		for(int i=0;i< varlist->Count;i++)
+		{
+		if(s==varlist[i])
+		{
+		
+			return true;
+		}
+		}
+		return false;
+	}
+	char DataTypeStringToChar(int x)
+	{
+		switch (x)
+		{
+		case 133:
+			return 'E';
+		case 134:
+			return 'F';
+		case 135:
+			return 'C';
+		case 136:
+			return 'S';
+		case 137:
+			return 'B';
+		default:
+			return 'X';
+		}
+	}
+	int OperandIndex(String^ s)
+	{
+		for(int i=0;i < varlist->Count;i++)
+		{
+			if(s==varlist[i])
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
 	void semantic(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList)
 	{
 		if (!synt(inputString,charset,TFunc,CodeList,MessageList)) 
 		{ 	
 			return; 
 		}
+		varlist->Clear();
+		varTypeList->Clear();
+		Operators->Clear();
+		Operands->Clear();
+		Jumps->Clear();
+		TablaTipos->Rows->Clear();
+		LSTVOPN->Clear();
+		LSTVJMP->Clear();
+		int constcount = 0;
+		int token =0;
+		String^ tokenSt =" ";
+		String^ errorlist = "";
+		bool firstkey = false;
+		int errorcount = 0;
+		//
+
+		System::Collections::Generic::Stack<String^>^ mff = gcnew System::Collections::Generic::Stack<String^>();
 
 
+		while(tokenlist->Count>0)
+			{
+			token = tokenlist[0];
+			tokenSt = tokenliststr[0];
+			tokenlist->RemoveAt(0);
+			tokenliststr->RemoveAt(0);
+			
+			if(token==100/*RES*/)
+			{
+				token += 31;
+				token += resDet(cargarVstring("Res.txt"),convertirMU(tokenSt));
+			}
+			if(token==101/*ID*/&&firstkey)
+			{
+				if (AlreadyExists(tokenSt) && mff->Count > 0 && mff->Peek() == "def")
+				{
+					errorlist += errorcount + ". Variable doblemente declarada " + tokenSt + "\n";
+					errorcount++;
+
+				}
+				if(!AlreadyExists(tokenSt))
+				{
+					if(mff->Count>0 && mff->Peek() == "def") 
+					{
+						varlist->Add(tokenSt);
+						varTypeList->Add(' ');
+						
+					}else 
+					{
+						//May have to rewrite
+						errorlist += errorcount + ". Variable no declarada " + tokenSt+"\n";
+						varlist->Add(tokenSt);
+						varTypeList->Add('E');
+						errorcount++;					
+					}
+									
+				}
+				
+
+				if(AlreadyExists(tokenSt)&& varTypeList[OperandIndex(tokenSt)] != ' ' && !(mff->Count > 0 && mff->Peek() == "def"))
+				{
+					Operands->Add(tokenSt);
+					OperandTypeList->Add(varTypeList[OperandIndex(tokenSt)]);
+					LSTVOPN->Items->Add(tokenSt);
+					
+				}
+			}
+			if(token==102 || token == 103 || token ==104 || token ==125 || token == 126)
+			{
+				constcount++;
+				Operands->Add("Const " + constcount);
+				switch (token)
+				{
+				case 102:
+					OperandTypeList->Add('E');
+					break;
+				case 103: case 104:
+					OperandTypeList->Add('F');
+						break;
+				case 125:
+					OperandTypeList->Add('C');
+					break;
+				case 126:
+					OperandTypeList->Add('S');
+					break;
+				}
+				LSTVOPN->Items->Add(Operands[Operands->Count - 1]);
+			}
+		
+			if(token==105 || token ==106/* + - */)
+			{
+			
+			}
+			if (token == 107 || token==108/* * / */)
+			{
+
+			}
+			if(token==109/*=*/)
+			{
+
+			}
+			if (token == 110 || token ==115 /* == != */)
+			{
+
+			}
+			if(token>=111 && token <= 114/* < <= > <= */)
+			{
+			}
+			if(token==123/*semicolon ;*/)
+			{
+				if (mff->Count > 0) {
+					mff->Pop();
+				}
+				
+			}
+			if(token==129/* { */)
+			{
+				firstkey = true;
+			}
+			if(token>=133 && token<=137 /*datatype*/)
+			{
+				for(int i=0;i< varTypeList->Count;i++)
+				{
+					
+					if(varTypeList[i]==' ')
+					{
+						varTypeList[i] = DataTypeStringToChar(token);
+						
+					}
+				}
+			}
+			//Operators
+			if(token==138 /*if*/)
+			{
+			
+			}
+			if (token == 139 /*else*/)
+			{
+
+			}
+			if(token==140/*do*/)
+			{
+			
+			}
+			if(token==141/*while*/)
+			{
+			
+			}
+			if(token==142/*input*/)
+			{
+			
+			}
+			if (token == 143/*output*/)
+			{
+
+			}
+			if (token == 144/*def*/)
+			{
+				mff->Push("def");
+			}
+			//to
+			//break
+			//lib
+			//of
+			//lib
+			//eval
+
+		   }
+
+		   if(errorlist->Length>0)
+		   {
+			   System::Windows::Forms::MessageBox::Show(errorlist);
+		   }
+		   for(int i=0;i<varlist->Count;i++)
+		   {
+
+			   TablaTipos->Rows->Add(varlist[i], varTypeList[i]);
+		   }
 	}
 	//Limpia los cuadros de texto
 	void limpiar(bool clearfile)
@@ -1477,5 +1739,16 @@ private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e
 
 
 
+private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e) 
+{
+	limpiar(false);
+	std::string inputString = convertirMU(Input);
+	std::string charset = convertirMU(CharsetName);
+	std::string TFunc = convertirMU(FTName);
+	std::string CodeListFileName = convertirMU(CLName);
+	std::string MessageListFileName = convertirMU(MLName);
+	//analizar(inputString, charset, TFunc, CodeListFileName, MessageListFileName, true);
+	semantic(inputString, charset, TFunc, CodeListFileName, MessageListFileName);
+}
 };
 }
