@@ -76,12 +76,13 @@ namespace AnalizadorGUI {
 	List<String^>^ Operands = gcnew List<String^>();
 	List<char>^ OperandTypeList = gcnew List<char>();
 	List<int>^ Jumps = gcnew List<int>();
-
+	
 	private: System::Windows::Forms::RichTextBox^ TBProceso;
 
 	private: System::Windows::Forms::Label^ label5;
 	private: System::Windows::Forms::Button^ button5;
-	private: System::Windows::Forms::DataGridView^ dataGridView1;
+	private: System::Windows::Forms::DataGridView^ CuadDGV;
+
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ numCuad;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Operador;
@@ -128,7 +129,7 @@ namespace AnalizadorGUI {
 			this->TBProceso = (gcnew System::Windows::Forms::RichTextBox());
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->button5 = (gcnew System::Windows::Forms::Button());
-			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
+			this->CuadDGV = (gcnew System::Windows::Forms::DataGridView());
 			this->numCuad = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Operador = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Op1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
@@ -147,7 +148,7 @@ namespace AnalizadorGUI {
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->button6 = (gcnew System::Windows::Forms::Button());
 			this->button7 = (gcnew System::Windows::Forms::Button());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->CuadDGV))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->TablaTipos))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -291,17 +292,17 @@ namespace AnalizadorGUI {
 			this->button5->UseVisualStyleBackColor = true;
 			this->button5->Click += gcnew System::EventHandler(this, &MyForm::button5_Click);
 			// 
-			// dataGridView1
+			// CuadDGV
 			// 
-			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(5) {
-				this->numCuad,
-					this->Operador, this->Op1, this->Op2, this->Res
+			this->CuadDGV->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->CuadDGV->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(5) {
+				this->numCuad, this->Operador,
+					this->Op1, this->Op2, this->Res
 			});
-			this->dataGridView1->Location = System::Drawing::Point(926, 88);
-			this->dataGridView1->Name = L"dataGridView1";
-			this->dataGridView1->Size = System::Drawing::Size(373, 369);
-			this->dataGridView1->TabIndex = 25;
+			this->CuadDGV->Location = System::Drawing::Point(926, 88);
+			this->CuadDGV->Name = L"CuadDGV";
+			this->CuadDGV->Size = System::Drawing::Size(373, 369);
+			this->CuadDGV->TabIndex = 25;
 			// 
 			// numCuad
 			// 
@@ -476,7 +477,7 @@ namespace AnalizadorGUI {
 			this->Controls->Add(this->LSTVOPN);
 			this->Controls->Add(this->LVSTOP);
 			this->Controls->Add(this->label2);
-			this->Controls->Add(this->dataGridView1);
+			this->Controls->Add(this->CuadDGV);
 			this->Controls->Add(this->button5);
 			this->Controls->Add(this->label5);
 			this->Controls->Add(this->TBProceso);
@@ -498,7 +499,7 @@ namespace AnalizadorGUI {
 			this->Name = L"MyForm";
 			this->Text = L"Compilador de juguete";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->CuadDGV))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->TablaTipos))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
@@ -1324,7 +1325,7 @@ namespace AnalizadorGUI {
 				Windows::Forms::MessageBox::Show("Archivo analizado exitosamente ", "Nice");
 				return true;		
 	}
-	char OpResType(char Op1,char Op2, int Op)
+	char OpResType(char Op1,char Op2, String^ Op)
 	{
 		int col = 0;
 		std::vector<std::vector<char>> tabla = { {'E','E','E','E','E','F','E','B','B','X',},{'E','S','X','X','S','X','X','X','X','X',}
@@ -1337,41 +1338,40 @@ namespace AnalizadorGUI {
 		,{'F','S','X','X','S','X','X','X','X','X',},{'F','B','X','X','X','X','X','X','X','X',},{'F','C','X','X','X','X','X','X','X','X',}
 		,{'F','F','F','F','F','F','X','B','B','X',} };
 		std::vector<char> lista = { 'E','E','E','F','E','B','B','B' };
-		switch (Op)
+		//Tener que escribir estos métodos de esta manera me desagrada, pero no pienso partirme la cabeza en una solución menos salvaje
+		if(Op=="*")
 		{
-		case 107:
 			col = 2;
-			break;
-		case 106:
-			col = 3;
-			break;
-		case 105:
-			col = 4;
-			break;
-		case 108:
-			col = 5;
-			break;
-		case 128:
-			col = 6;
-			break;
-		
-		case 111:
-		case 112:
-		case 113:
-		case 114:
-			col = 7;
-			break;
-		case 110:
-		case 115:
-			col = 8;
-		case 117:
-		case 118:
-			col = 9;
-			break;
-		default: 
-			System::Windows::Forms::MessageBox::Show("Eso no es un operando de verdad, viejón");
-			return 'X';
 		}
+		if (Op == "-")
+		{
+			col = 3;
+		}
+		if (Op == "+")
+		{
+			col = 4;
+		}
+		if (Op == "/")
+		{
+			col = 5;
+		}
+		if (Op == "%")
+		{
+			col = 6;
+		}
+		if (Op == "<" || Op == "<=" || Op == ">" || Op == ">=" )
+		{
+			col = 7;
+		}
+		if (Op == "==" || Op =="!=")
+		{
+			col = 8;
+		}
+		if (Op == "&&" || Op == "||")
+		{
+			col = 9;
+		}
+	
 		for(int i=0;i<tabla.size();i++)
 		{
 			if(Op1== tabla[i][0] && Op2==tabla[i][1]) 
@@ -1380,50 +1380,51 @@ namespace AnalizadorGUI {
 				{
 					return tabla[i][col];
 				}
-				return lista[col - 2];
+				if(col>=2)
+				{
+					return lista[col - 2];
+				}
+				
 			}
 		
 		}
 		return 'X';
 	}
-	char OpResTypeError(char Op1, char Op2, int Op)
+	char OpResTypeError(char Op1, char Op2, String^ Op)
 	{
 		std::vector<char> lista = { 'E','E','E','F','E','B','B','B' };
 		int col;
-		switch (Op)
+		if (Op == "*")
 		{
-		case 107:
 			col = 0;
-			break;
-		case 106:
+		}
+		if (Op == "-")
+		{
 			col = 1;
-			break;
-		case 105:
+		}
+		if (Op == "+")
+		{
 			col = 2;
-			break;
-		case 108:
+		}
+		if (Op == "/")
+		{
 			col = 3;
-			break;
-		case 128:
+		}
+		if (Op == "%")
+		{
 			col = 4;
-			break;
-
-		case 111:
-		case 112:
-		case 113:
-		case 114:
+		}
+		if (Op == "<" || Op == "<=" || Op == ">" || Op == ">=")
+		{
 			col = 5;
-			break;
-		case 110:
-		case 115:
+		}
+		if (Op == "==" || Op == "!=")
+		{
 			col = 6;
-		case 117:
-		case 118:
+		}
+		if (Op == "&&" || Op == "||")
+		{
 			col = 7;
-			break;
-		default:
-			System::Windows::Forms::MessageBox::Show("Eso no es un operando de verdad, viejón");
-			return 'X';
 		}
 		return lista[col];
 	}
@@ -1468,12 +1469,54 @@ namespace AnalizadorGUI {
 		}
 		return -1;
 	}
+	String^ Operation(String^ Operator, int rescount, int Cuadcount)
+	{
+		String^ s = "";
+		char c = ' ';
+	
+		c = OpResType(OperandTypeList[OperandTypeList->Count - 2], OperandTypeList[OperandTypeList->Count - 1], Operator);
+		if(c=='X')
+		{
+		c= OpResTypeError(OperandTypeList[OperandTypeList->Count - 2], OperandTypeList[OperandTypeList->Count - 1], Operator);
+		s += "Error entre tipos";
+		}
+		CuadDGV->Rows->Add(Cuadcount + " ", Operator, Operands[Operands->Count - 2], Operands[Operands->Count - 1], "R" + rescount);
+		Operands->RemoveAt(Operands->Count - 1);
+		Operands->RemoveAt(Operands->Count - 1);
+		OperandTypeList->Remove(OperandTypeList->Count - 1);
+		OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
+		Operators->RemoveAt(Operators->Count - 1);
+		Operands->Add("R" + rescount);
+		OperandTypeList->Add(c);
+		LSTVOPN->Items->Add(Operands[Operands->Count-1]);
+		
+		return s;
+	}
+	String^ Asig(int Cuadcount)
+	{
+		String^ s = "";
+	if(Operators->Count>=1 && Operands->Count>=2 && Operators[Operators->Count - 1] == "=")
+	{
+		if(OperandTypeList[OperandTypeList->Count-1]!= OperandTypeList[OperandTypeList->Count - 2])
+		{
+			s += "Error entre tipos en asignación a ";
+		}
+		CuadDGV->Rows->Add(Cuadcount + " ", "=", Operands[Operands->Count - 2],"Nada xD", Operands[Operands->Count - 1]);
+		Operands->RemoveAt(Operands->Count - 1);
+		Operands->RemoveAt(Operands->Count - 1);
+		OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
+		OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
+		Operators->RemoveAt(Operators->Count - 1);
+	}
+	return s;
+	}
 	void semantic(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList)
 	{
 		if (!synt(inputString,charset,TFunc,CodeList,MessageList)) 
 		{ 	
 			return; 
 		}
+		int Cuadcount = 0;
 		varlist->Clear();
 		varTypeList->Clear();
 		Operators->Clear();
@@ -1481,11 +1524,15 @@ namespace AnalizadorGUI {
 		Jumps->Clear();
 		TablaTipos->Rows->Clear();
 		LSTVOPN->Clear();
+		LVSTOP->Clear();
 		LSTVJMP->Clear();
+		CuadDGV->Rows->Clear();
 		int constcount = 0;
+		int rescount = 0;
 		int token =0;
 		String^ tokenSt =" ";
 		String^ errorlist = "";
+		String^ auxstr="";
 		bool firstkey = false;
 		int errorcount = 0;
 		//
@@ -1561,18 +1608,66 @@ namespace AnalizadorGUI {
 				}
 				LSTVOPN->Items->Add(Operands[Operands->Count - 1]);
 			}
-		
+		//Este código es malísimo :)
 			if(token==105 || token ==106/* + - */)
 			{
-			
-			}
-			if (token == 107 || token==108/* * / */)
-			{
+				
+				
+					
+					while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+					{
+						rescount++; Cuadcount++;
+						errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
+					}
+
+				switch (token)
+				{
+				case 105:
+					Operators->Add("+");
+					break;
+				case 106:
+					Operators->Add("-");
+					break;
+				}
+				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
+			}
+			if (token == 107 || token==108 || token == 128/* * / % */)
+			{
+								
+						while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%" ))
+						{
+							rescount++; Cuadcount++;
+							errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+
+
+							
+						}
+
+				switch (token)
+				{
+				case 107:
+					Operators->Add("*");
+					break;
+				case 108:
+					Operators->Add("/");
+					break;
+				case 128:
+					Operators->Add("%");
+					break;
+				}
+				LVSTOP->Items->Add(Operators[Operators->Count-1]);
 			}
 			if(token==109/*=*/)
 			{
+				Operators->Add("=");
+				LVSTOP->Items->Add("=");
+				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+				{
+					rescount++; Cuadcount++;
+					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
+				}
 			}
 			if (token == 110 || token ==115 /* == != */)
 			{
@@ -1586,7 +1681,22 @@ namespace AnalizadorGUI {
 				if (mff->Count > 0) {
 					mff->Pop();
 				}
-				
+				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+				{
+					rescount++; Cuadcount++;
+					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+
+				}
+					if(Operators->Count>0 && Operators[Operators->Count-1]=="=")
+					{
+						String^ auxcuadsig = "";
+						auxcuadsig = Asig(Cuadcount);
+						if (auxcuadsig != "")
+						{
+							errorcount++;
+							errorlist += errorcount + ". " + auxcuadsig;
+						}
+					}
 			}
 			if(token==129/* { */)
 			{
@@ -1639,7 +1749,7 @@ namespace AnalizadorGUI {
 			//of
 			//lib
 			//eval
-
+		
 		   }
 
 		   if(errorlist->Length>0)
