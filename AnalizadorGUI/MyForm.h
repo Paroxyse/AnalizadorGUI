@@ -70,6 +70,8 @@ namespace AnalizadorGUI {
 	List<int>^ tokenlist =  gcnew List<int>();
 	List<String^>^ tokenliststr = gcnew List<String^>();
 
+	List<String^>^ varlist= gcnew List<String^>();
+	List<char>^ varTypeList = gcnew List<char>();
 
 	private: System::Windows::Forms::RichTextBox^ TBProceso;
 
@@ -1220,7 +1222,7 @@ namespace AnalizadorGUI {
 		std::vector<std::vector<int>> MP{};
 		std::vector<std::vector<int>> TP{};
 		int state = 0;
-		
+		int tlistcount = tokenlist->Count;
 		bool fileendfound = false;
 		bool stempty = false;
 		
@@ -1232,7 +1234,7 @@ namespace AnalizadorGUI {
 			stack_sint.push(0);
 			MP = cargarFT(convertirMU(MPName));
 			TP = lul();
-			while (tokenlist->Count > 0) {
+			while (tlistcount > 0) {
 				state = tokenlist[0];
 				if (state != 127)
 				{
@@ -1307,11 +1309,86 @@ namespace AnalizadorGUI {
 						}
 					}
 				}
+				tokenlist->Add(tokenlist[0]);
+				tokenliststr->Add(tokenliststr[0]);
 				tokenlist->RemoveAt(0);
 				tokenliststr->RemoveAt(0);
+				tlistcount--;
 			}			
 				Windows::Forms::MessageBox::Show("Archivo analizado exitosamente ", "Nice");
 				return true;		
+	}
+	char OpResType(char Op1,char Op2, int Op)
+	{
+		int col = 0;
+		std::vector<std::vector<char>> tabla = { {'E','E','E','E','E','F','E','B','B','X',},{'E','S','X','X','S','X','X','X','X','X',}
+		,{'E','B','X','X','X','X','X','X','X','X',},{'E','C','X','X','X','X','X','X','X','X',},{'E','F','F','F','F','F','X','B','B','X',}
+		,{'S','E','X','X','S','X','X','X','X','X',},{'S','S','X','X','S','X','X','X','B','X',},{'S','B','X','X','S','X','X','X','X','X',}
+		,{'S','C','X','X','S','X','X','X','B','X',},{'S','F','X','X','S','X','X','X','X','X',},{'B','S','X','X','S','X','X','X','X','X',}
+		,{'B','B','X','X','X','X','X','X','B','B',},{'B','C','X','X','X','X','X','X','X','X',},{'B','F','X','X','X','X','X','X','X','X',}
+		,{'C','E','X','X','X','X','X','X','X','X',},{'C','S','X','X','S','X','X','X','B','X',},{'C','B','X','X','X','X','X','X','X','X',}
+		,{'C','C','X','X','S','X','X','X','B','X',},{'C','F','X','X','X','X','X','X','X','X',},{'F','E','F','F','F','F','X','B','B','X',}
+		,{'F','S','X','X','S','X','X','X','X','X',},{'F','B','X','X','X','X','X','X','X','X',},{'F','C','X','X','X','X','X','X','X','X',}
+		,{'F','F','F','F','F','F','X','B','B','X',} };
+		std::vector<char> lista = { 'E','E','E','F','E','B','B','B' };
+		switch (Op)
+		{
+		case 107:
+			col = 2;
+			break;
+		case 106:
+			col = 3;
+			break;
+		case 105:
+			col = 4;
+			break;
+		case 108:
+			col = 5;
+			break;
+		case 128:
+			col = 6;
+			break;
+		
+		case 111:
+		case 112:
+		case 113:
+		case 114:
+			col = 7;
+			break;
+		case 110:
+		case 115:
+			col = 8;
+		case 117:
+		case 118:
+			col = 9;
+			break;
+		default: 
+			System::Windows::Forms::MessageBox::Show("Eso no es un operando de verdad, viejón");
+			return 'X';
+		}
+		for(int i=0;i<tabla.size();i++)
+		{
+			if(Op1== tabla[i][0] && Op2==tabla[i][1]) 
+			{
+				if(tabla[i][col]!='X')
+				{
+					return tabla[i][col];
+				}
+				return lista[col - 2];
+			}
+		
+		}
+		return 'X';
+	}
+
+	void semantic(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList)
+	{
+		if (!synt(inputString,charset,TFunc,CodeList,MessageList)) 
+		{ 	
+			return; 
+		}
+
+
 	}
 	//Limpia los cuadros de texto
 	void limpiar(bool clearfile)

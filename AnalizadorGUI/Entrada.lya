@@ -1,7 +1,7 @@
 class eterno1
 {
      def X, Y of float;
-     def class of int;
+     def class1 of int;
     a=a+a;
     loop
     {
