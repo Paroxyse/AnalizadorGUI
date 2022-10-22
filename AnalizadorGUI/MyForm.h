@@ -1492,6 +1492,22 @@ namespace AnalizadorGUI {
 		
 		return s;
 	}
+	String^ Negar(int Cuadcount, int rescount)
+	{
+		String^ s = "";
+		if(OperandTypeList[OperandTypeList->Count-1]!='B')
+		{
+			s += "Error entre tipos, "+ "intentó negar "+Operands[Operands->Count-1]+ " y no es bool";
+		}
+		CuadDGV->Rows->Add(Cuadcount + " ", "!", Operands[Operands->Count - 1], " ", "R" + rescount);
+		Operands->RemoveAt(Operands->Count - 1);
+		OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
+		Operators->RemoveAt(Operators->Count - 1);
+		Operands->Add("R" + rescount);
+		OperandTypeList->Add('B');
+		LSTVOPN->Items->Add(Operands[Operands->Count - 1]);
+		return s;
+	}
 	String^ Asig(int Cuadcount)
 	{
 		String^ s = "";
@@ -1539,7 +1555,7 @@ namespace AnalizadorGUI {
 
 		System::Collections::Generic::Stack<String^>^ mff = gcnew System::Collections::Generic::Stack<String^>();
 
-
+		//Este código es malísimo :)
 		while(tokenlist->Count>0)
 			{
 			token = tokenlist[0];
@@ -1608,7 +1624,7 @@ namespace AnalizadorGUI {
 				}
 				LSTVOPN->Items->Add(Operands[Operands->Count - 1]);
 			}
-		//Este código es malísimo :)
+		
 			if(token==105 || token ==106/* + - */)
 			{
 				
@@ -1706,12 +1722,9 @@ namespace AnalizadorGUI {
 				}
 				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 			}
-			if(token==123/*semicolon ;*/)
+			if(token==116/* ! */)
 			{
-				if (mff->Count > 0) {
-					mff->Pop();
-				}
-				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!=" ||
+				while (Operators->Count >= 1 && ( Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!=" ||
 					Operators[Operators->Count - 1] == "<" || Operators[Operators->Count - 1] == "<="
 					|| Operators[Operators->Count - 1] == ">" || Operators[Operators->Count - 1] == ">="
 					|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*"
@@ -1721,7 +1734,91 @@ namespace AnalizadorGUI {
 					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
 				}
-					if(Operators->Count>0 && Operators[Operators->Count-1]=="=")
+
+				Operators->Add("!");
+				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
+			}
+			if(token==117/* & */)
+			{
+				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "||"
+					|| Operators[Operators->Count - 1] == "&&"
+					|| Operators[Operators->Count - 1] == "!"
+					|| Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!="
+					|| Operators[Operators->Count - 1] == "<" || Operators[Operators->Count - 1] == "<="
+					|| Operators[Operators->Count - 1] == ">" || Operators[Operators->Count - 1] == ">="
+					|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*"
+					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+				{
+					rescount++; Cuadcount++;
+
+					if (Operators[Operators->Count - 1] != "!")
+					{
+						errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+
+					}
+					else { errorlist += Negar(Cuadcount, rescount); }
+
+
+				}
+				Operators->Add("&&");
+				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
+			}
+			if (token == 118/* || */)
+			{
+				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "||"
+					|| Operators[Operators->Count - 1] == "&&"
+					|| Operators[Operators->Count - 1] == "!"
+					|| Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!="
+					|| Operators[Operators->Count - 1] == "<" || Operators[Operators->Count - 1] == "<="
+					|| Operators[Operators->Count - 1] == ">" || Operators[Operators->Count - 1] == ">="
+					|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*"
+					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+				{
+					rescount++; Cuadcount++;
+
+					if (Operators[Operators->Count - 1] != "!")
+					{
+						errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+
+					}
+					else { errorlist += Negar(Cuadcount, rescount); }
+
+
+				}
+				Operators->Add("||");
+				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
+			}
+
+			if(token==123/*semicolon ;*/)
+			{
+				if (mff->Count > 0) {
+					mff->Pop();
+				}
+				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "||" 
+					|| Operators[Operators->Count - 1] == "&&"
+					|| Operators[Operators->Count - 1] == "!" 
+					|| Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!=" 
+					|| Operators[Operators->Count - 1] == "<" || Operators[Operators->Count - 1] == "<="
+					|| Operators[Operators->Count - 1] == ">" || Operators[Operators->Count - 1] == ">="
+					|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*"
+					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+				{
+					rescount++; Cuadcount++;
+
+					if (Operators[Operators->Count - 1] != "!")
+					{
+					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+
+					}else{ errorlist += Negar(Cuadcount, rescount); }
+					
+
+				}
+				/*while(Operators->Count >= 1 && Operators[Operators->Count - 1] == "!")
+				{
+					rescount++; Cuadcount++;
+					errorlist += Negar(Cuadcount, rescount);
+				}*/
+				if(Operators->Count>0 && Operators[Operators->Count-1]=="=")
 					{
 						String^ auxcuadsig = "";
 						Cuadcount++;
@@ -1733,6 +1830,7 @@ namespace AnalizadorGUI {
 						}
 					}
 			}
+
 			if(token==129/* { */)
 			{
 				firstkey = true;
@@ -1749,7 +1847,9 @@ namespace AnalizadorGUI {
 					}
 				}
 			}
-			//Operators
+			
+
+
 			if(token==138 /*if*/)
 			{
 			
