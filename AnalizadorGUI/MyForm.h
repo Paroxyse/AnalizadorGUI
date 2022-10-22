@@ -1690,6 +1690,7 @@ namespace AnalizadorGUI {
 					if(Operators->Count>0 && Operators[Operators->Count-1]=="=")
 					{
 						String^ auxcuadsig = "";
+						Cuadcount++;
 						auxcuadsig = Asig(Cuadcount);
 						if (auxcuadsig != "")
 						{
