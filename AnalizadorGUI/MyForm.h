@@ -1517,7 +1517,7 @@ namespace AnalizadorGUI {
 		{
 			s += "Error entre tipos en asignación a "+ Operands[Operands->Count-2]+", "+ Operands[Operands->Count - 1]+ " "+OperandTypeList[OperandTypeList->Count-2]+ " "+OperandTypeList[OperandTypeList->Count - 1];
 		}
-		CuadDGV->Rows->Add(Cuadcount + " ", "=", Operands[Operands->Count - 2],"Nada xD", Operands[Operands->Count - 1]);
+		CuadDGV->Rows->Add(Cuadcount + " ", "=", Operands[Operands->Count - 2],"---", Operands[Operands->Count - 1]);
 		Operands->RemoveAt(Operands->Count - 1);
 		Operands->RemoveAt(Operands->Count - 1);
 		OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
@@ -1525,6 +1525,20 @@ namespace AnalizadorGUI {
 		Operators->RemoveAt(Operators->Count - 1);
 	}
 	return s;
+	}
+	void fill(int index, int filler)
+	{
+		if(index<1)
+		{
+			System::Windows::Forms::MessageBox::Show("No hay índices menores a 1 bro, somos como LUA");
+			return;
+		}
+		index--;
+		if (CuadDGV->Rows[index]->Cells[4]->Value =="?")
+		{
+			CuadDGV->Rows[index]->Cells[4]->Value = filler + "";
+		}
+		
 	}
 	void semantic(std::string inputString, std::string charset, std::string TFunc, std::string CodeList, std::string MessageList)
 	{
@@ -1831,7 +1845,20 @@ namespace AnalizadorGUI {
 			}
 			if(token==123/*semicolon ;*/)
 			{
+				
 				if (mff->Count > 0) {
+					if(mff->Peek()=="if" && Jumps->Count>0)
+					{
+						Operators->RemoveAt(Operators->Count - 1);
+						fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
+						Jumps->RemoveAt(Jumps->Count - 1);
+					}
+					if (mff->Peek() == "else" && Jumps->Count > 0)
+					{
+						
+						fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
+						Jumps->RemoveAt(Jumps->Count - 1);
+					}
 					mff->Pop();
 				}
 				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "||" 
@@ -1850,8 +1877,6 @@ namespace AnalizadorGUI {
 					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
 					}else{ errorlist += Negar(Cuadcount, rescount); }
-					
-
 				}
 				
 				if(Operators->Count>0 && Operators[Operators->Count-1]=="=")
@@ -1896,7 +1921,13 @@ namespace AnalizadorGUI {
 			}
 			if (token == 139 /*else*/)
 			{
-
+				mff->Push("else");
+				Cuadcount++;
+				CuadDGV->Rows->Add(Cuadcount + " ", "SI", "", "", "?");
+				fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
+				Jumps->RemoveAt(Jumps->Count - 1);
+				Jumps->Add(Cuadcount);
+				LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
 			}
 			if(token==140/*do*/)
 			{
