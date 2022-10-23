@@ -1788,7 +1788,35 @@ namespace AnalizadorGUI {
 				Operators->Add("||");
 				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 			}
+			if(token==119 /*(*/)
+			{
+				Operators->Add("F");
+				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
+			}
+			if (token == 120 /*)*/)
+			{
+				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "||"
+					|| Operators[Operators->Count - 1] == "&&"
+					|| Operators[Operators->Count - 1] == "!"
+					|| Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!="
+					|| Operators[Operators->Count - 1] == "<" || Operators[Operators->Count - 1] == "<="
+					|| Operators[Operators->Count - 1] == ">" || Operators[Operators->Count - 1] == ">="
+					|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*"
+					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+				{
+					rescount++; Cuadcount++;
 
+					if (Operators[Operators->Count - 1] != "!")
+					{
+						errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+
+					}
+					else { errorlist += Negar(Cuadcount, rescount); }
+
+
+				}
+				Operators->RemoveAt(Operators->Count - 1);
+			}
 			if(token==123/*semicolon ;*/)
 			{
 				if (mff->Count > 0) {
@@ -1813,11 +1841,7 @@ namespace AnalizadorGUI {
 					
 
 				}
-				/*while(Operators->Count >= 1 && Operators[Operators->Count - 1] == "!")
-				{
-					rescount++; Cuadcount++;
-					errorlist += Negar(Cuadcount, rescount);
-				}*/
+				
 				if(Operators->Count>0 && Operators[Operators->Count-1]=="=")
 					{
 						String^ auxcuadsig = "";
