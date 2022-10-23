@@ -1676,6 +1676,7 @@ namespace AnalizadorGUI {
 			}
 			if(token==109/*=*/)
 			{
+				mff->Push("=");
 				Operators->Add("=");
 				LVSTOP->Items->Add("=");
 				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
@@ -1816,6 +1817,17 @@ namespace AnalizadorGUI {
 
 				}
 				Operators->RemoveAt(Operators->Count - 1);
+
+				if(mff->Peek()=="if")
+				{
+					Cuadcount++;
+					Jumps->Add(Cuadcount);
+					LSTVJMP->Items->Add(""+Jumps[Jumps->Count - 1]);
+				
+					CuadDGV->Rows->Add(Cuadcount + " ", "SF", Operands[Operands->Count - 1], "", "?");
+					Operands->RemoveAt(Operands->Count - 1);
+					OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
+				}
 			}
 			if(token==123/*semicolon ;*/)
 			{
@@ -1877,6 +1889,10 @@ namespace AnalizadorGUI {
 			if(token==138 /*if*/)
 			{
 			
+				mff->Push("if");
+				Operators->Add("F");
+			
+				//LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 			}
 			if (token == 139 /*else*/)
 			{
