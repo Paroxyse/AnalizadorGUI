@@ -1805,7 +1805,7 @@ namespace AnalizadorGUI {
 			}
 			if(token==119 /*(*/)
 			{
-				Operators->Add("F");
+				Operators->Add("FP");
 				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 			}
 			if (token == 120 /*)*/)
@@ -1821,18 +1821,24 @@ namespace AnalizadorGUI {
 				{
 					rescount++; Cuadcount++;
 
-					if (Operators[Operators->Count - 1] != "!")
+					if (Operators->Count>0 && Operators[Operators->Count - 1] != "!")
 					{
 						errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
 					}
-					else { errorlist += Negar(Cuadcount, rescount); }
+					if(Operators->Count>0 && Operators[Operators->Count - 1] == "!") 
+					{
+						errorlist += Negar(Cuadcount, rescount); 
+					}
 
 
 				}
-				Operators->RemoveAt(Operators->Count - 1);
+				
+					Operators->RemoveAt(Operators->Count - 1);
+				
+				
 
-				if(mff->Peek()=="if")
+				if(mff->Peek()=="if" && (Operators->Count > 0 && Operators[Operators->Count - 1] == "FIF"))
 				{
 					Cuadcount++;
 					Jumps->Add(Cuadcount);
@@ -1842,6 +1848,17 @@ namespace AnalizadorGUI {
 					Operands->RemoveAt(Operands->Count - 1);
 					OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
 				}
+				if (mff->Peek() == "while" && (Operators->Count > 0 && Operators[Operators->Count - 1] == "WHF"))
+				{
+					Cuadcount++;
+					Jumps->Add(Cuadcount);
+					LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
+
+					CuadDGV->Rows->Add(Cuadcount + " ", "SF", Operands[Operands->Count - 1], "", "?");
+					Operands->RemoveAt(Operands->Count - 1);
+					OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
+				}
+
 			}
 			if(token==123/*semicolon ;*/)
 			{
@@ -1855,7 +1872,15 @@ namespace AnalizadorGUI {
 					}
 					if (mff->Peek() == "else" && Jumps->Count > 0)
 					{
-						
+						mff->Pop();
+						fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
+						Jumps->RemoveAt(Jumps->Count - 1);
+					}
+					if (mff->Peek() == "while" && Jumps->Count > 0)
+					{
+						Operators->RemoveAt(Operators->Count - 1);
+						Cuadcount++;
+						CuadDGV->Rows->Add(Cuadcount + " ", "SI", "", "", Jumps[Jumps->Count - 1]+"");
 						fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
 						Jumps->RemoveAt(Jumps->Count - 1);
 					}
@@ -1915,7 +1940,7 @@ namespace AnalizadorGUI {
 			{
 			
 				mff->Push("if");
-				Operators->Add("F");
+				Operators->Add("FIF");
 			
 				//LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 			}
@@ -1935,7 +1960,8 @@ namespace AnalizadorGUI {
 			}
 			if(token==141/*while*/)
 			{
-			
+				mff->Push("while");
+				Operators->Add("WHF");
 			}
 			if(token==142/*input*/)
 			{

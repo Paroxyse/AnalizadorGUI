@@ -13,8 +13,9 @@ if(X>0.0)
 X=1.0;
 else 
 s="owo";
-if(X==0.0);
+if( (X==0.0 && X==0.0) && (bola==bola) ) ;
 ; 
+while((X>Y)&&(Y<X) && bola) X=1.1;;
 }
 
  
