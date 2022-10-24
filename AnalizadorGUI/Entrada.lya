@@ -16,6 +16,13 @@ s="owo";
 if( (X==0.0 && X==0.0) && (bola==bola) ) ;
 ; 
 while((X>Y)&&(Y<X) && bola) X=1.1;;
+
+do X=1.1; 
+Y=0.0;
+eval (X);
+output(X+1.1,Y);
+input(X,Y,X,Y);
+
 }
 
  

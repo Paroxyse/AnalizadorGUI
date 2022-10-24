@@ -101,7 +101,7 @@ namespace AnalizadorGUI {
 	private: System::Windows::Forms::Label^ label8;
 	private: System::Windows::Forms::Label^ label9;
 	private: System::Windows::Forms::Button^ button6;
-	private: System::Windows::Forms::Button^ button7;
+
 	private:
 		/// <summary>
 		/// Required designer variable.
@@ -147,7 +147,6 @@ namespace AnalizadorGUI {
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->button6 = (gcnew System::Windows::Forms::Button());
-			this->button7 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->CuadDGV))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->TablaTipos))->BeginInit();
 			this->SuspendLayout();
@@ -208,7 +207,7 @@ namespace AnalizadorGUI {
 			// 
 			// button3
 			// 
-			this->button3->Location = System::Drawing::Point(343, 477);
+			this->button3->Location = System::Drawing::Point(328, 477);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(100, 40);
 			this->button3->TabIndex = 16;
@@ -284,7 +283,7 @@ namespace AnalizadorGUI {
 			// 
 			// button5
 			// 
-			this->button5->Location = System::Drawing::Point(449, 477);
+			this->button5->Location = System::Drawing::Point(434, 477);
 			this->button5->Name = L"button5";
 			this->button5->Size = System::Drawing::Size(100, 40);
 			this->button5->TabIndex = 24;
@@ -444,29 +443,19 @@ namespace AnalizadorGUI {
 			// 
 			// button6
 			// 
-			this->button6->Location = System::Drawing::Point(343, 523);
+			this->button6->Location = System::Drawing::Point(545, 477);
 			this->button6->Name = L"button6";
-			this->button6->Size = System::Drawing::Size(100, 40);
+			this->button6->Size = System::Drawing::Size(100, 71);
 			this->button6->TabIndex = 35;
-			this->button6->Text = L"Análisis semántico";
+			this->button6->Text = L"Análisis semántico y generación de código";
 			this->button6->UseVisualStyleBackColor = true;
 			this->button6->Click += gcnew System::EventHandler(this, &MyForm::button6_Click);
-			// 
-			// button7
-			// 
-			this->button7->Location = System::Drawing::Point(449, 521);
-			this->button7->Name = L"button7";
-			this->button7->Size = System::Drawing::Size(100, 40);
-			this->button7->TabIndex = 36;
-			this->button7->Text = L"Generación de código";
-			this->button7->UseVisualStyleBackColor = true;
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1324, 681);
-			this->Controls->Add(this->button7);
 			this->Controls->Add(this->button6);
 			this->Controls->Add(this->label9);
 			this->Controls->Add(this->label8);
@@ -1492,6 +1481,12 @@ namespace AnalizadorGUI {
 		
 		return s;
 	}
+	void ReadWrite(int Cuadcount)
+	{
+		CuadDGV->Rows->Add(Cuadcount + " ", Operators[Operators->Count-1], " ", " ", Operands[Operands->Count - 1]);
+		Operands->RemoveAt(Operands->Count - 1);
+		OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
+	}
 	String^ Negar(int Cuadcount, int rescount)
 	{
 		String^ s = "";
@@ -1805,8 +1800,14 @@ namespace AnalizadorGUI {
 			}
 			if(token==119 /*(*/)
 			{
+				if (mff->Count > 0 && mff->Peek() == "while" && Operators->Count>0 && Operators[Operators->Count-1]=="WHF")
+				{
+					Jumps->Add(Cuadcount+1);
+					LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
+				}
 				Operators->Add("FP");
 				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
+				
 			}
 			if (token == 120 /*)*/)
 			{
@@ -1858,11 +1859,22 @@ namespace AnalizadorGUI {
 					Operands->RemoveAt(Operands->Count - 1);
 					OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
 				}
+				if (mff->Peek() == "eval" && (Operators->Count > 0 && Operators[Operators->Count - 1] == "EF"))
+				{
+					Cuadcount++;
+					//Jumps->Add(Cuadcount);
+					//LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
 
+					CuadDGV->Rows->Add(Cuadcount + " ", "SV", Operands[Operands->Count - 1], "", Jumps[Jumps->Count-1]);
+					Operands->RemoveAt(Operands->Count - 1);
+					OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
+				}
+			
 			}
 			if(token==123/*semicolon ;*/)
 			{
-				
+				//Me puedo ahorrar lineas en esto, pero la prioridad es que funcione primero
+
 				if (mff->Count > 0) {
 					if(mff->Peek()=="if" && Jumps->Count>0)
 					{
@@ -1880,9 +1892,27 @@ namespace AnalizadorGUI {
 					{
 						Operators->RemoveAt(Operators->Count - 1);
 						Cuadcount++;
-						CuadDGV->Rows->Add(Cuadcount + " ", "SI", "", "", Jumps[Jumps->Count - 1]+"");
+						CuadDGV->Rows->Add(Cuadcount + " ", "SI", "", "", Jumps[Jumps->Count - 2]+"");
 						fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
 						Jumps->RemoveAt(Jumps->Count - 1);
+					}
+					if (mff->Peek() == "eval" && Jumps->Count > 0)
+					{
+						Operators->RemoveAt(Operators->Count - 1);
+						//Cuadcount++;
+						
+						/*fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
+						Jumps->RemoveAt(Jumps->Count - 1);*/
+					}
+					if ((mff->Peek() == "input" && Operators->Count > 0 && Operators[Operators->Count - 1] == "IN")
+						|| (mff->Peek() == "output" && Operators->Count > 0 && Operators[Operators->Count - 1] == "OUT"))
+					{
+						while (Operands->Count > 0)
+						{
+							Cuadcount++;
+							ReadWrite(Cuadcount);
+						}
+						Operators->RemoveAt(Operators->Count - 1);
 					}
 					mff->Pop();
 				}
@@ -1916,7 +1946,39 @@ namespace AnalizadorGUI {
 						}
 					}
 			}
+			if (token == 124/*comma ,*/)
+			{
+				if (mff->Count>0 && mff->Peek() == "output")
+				{
+					while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "||"
+						|| Operators[Operators->Count - 1] == "&&"
+						|| Operators[Operators->Count - 1] == "!"
+						|| Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!="
+						|| Operators[Operators->Count - 1] == "<" || Operators[Operators->Count - 1] == "<="
+						|| Operators[Operators->Count - 1] == ">" || Operators[Operators->Count - 1] == ">="
+						|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*"
+						|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+					{
+						rescount++; Cuadcount++;
 
+						if (Operators->Count > 0 && Operators[Operators->Count - 1] != "!")
+						{
+							errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+
+						}
+						if (Operators->Count > 0 && Operators[Operators->Count - 1] == "!")
+						{
+							errorlist += Negar(Cuadcount, rescount);
+						}
+
+						/*Cuadcount++;
+							ReadWrite(Cuadcount);*/
+					}
+					
+
+				}
+				
+			}
 			if(token==129/* { */)
 			{
 				firstkey = true;
@@ -1956,7 +2018,8 @@ namespace AnalizadorGUI {
 			}
 			if(token==140/*do*/)
 			{
-			
+				Jumps->Add(Cuadcount + 1);
+				LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
 			}
 			if(token==141/*while*/)
 			{
@@ -1965,11 +2028,13 @@ namespace AnalizadorGUI {
 			}
 			if(token==142/*input*/)
 			{
-			
+				mff->Push("input");
+				Operators->Add("IN");
 			}
 			if (token == 143/*output*/)
 			{
-
+				mff->Push("output");
+				Operators->Add("OUT");
 			}
 			if (token == 144/*def*/)
 			{
@@ -1979,9 +2044,12 @@ namespace AnalizadorGUI {
 			//break
 			//lib
 			//of
-			//lib
-			//eval
-		
+			
+			if(token==150/* eval */)
+			{
+				mff->Push("eval");
+				Operators->Add("EF");
+			}
 		   }
 
 		   if(errorlist->Length>0)
