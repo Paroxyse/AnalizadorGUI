@@ -1558,7 +1558,7 @@ namespace AnalizadorGUI {
 		int rescount = 0;
 		int token =0;
 		String^ tokenSt =" ";
-		String^ errorlist = "";
+		String^ errorlist = "Errores semánticos\n---------------\n";
 		String^ auxstr="";
 		bool firstkey = false;
 		int errorcount = 0;
