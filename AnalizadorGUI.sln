@@ -5,8 +5,6 @@ VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AnalizadorGUI", "AnalizadorGUI\AnalizadorGUI.vcxproj", "{D4E211AE-F225-4F27-A09D-FB7475E6EF88}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Instalador", "Instalador\Instalador.vdproj", "{B939B96C-A14C-4F63-80CA-F0A2E194349E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,10 +21,6 @@ Global
 		{D4E211AE-F225-4F27-A09D-FB7475E6EF88}.Release|x64.Build.0 = Release|x64
 		{D4E211AE-F225-4F27-A09D-FB7475E6EF88}.Release|x86.ActiveCfg = Release|Win32
 		{D4E211AE-F225-4F27-A09D-FB7475E6EF88}.Release|x86.Build.0 = Release|Win32
-		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Debug|x64.ActiveCfg = Debug
-		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Debug|x86.ActiveCfg = Debug
-		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Release|x64.ActiveCfg = Release
-		{B939B96C-A14C-4F63-80CA-F0A2E194349E}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-class eterno1
+class ejemplo
 {
      def X, Y of float;
      def class1 of int;
@@ -17,10 +17,17 @@ if( (X==0.0 && X==0.0) && (bola==bola) ) ;
 ; 
 while((X>Y)&&(Y<X) && bola) X=1.1;;
 
+X=class1;
+s=bola+1;
+s=1;
+x=0;
+def X of int;
+
+
 do X=1.1; 
 Y=0.0;
 eval (X);
-output(X+1.1,Y);
+output((X+1.1) + 1,Y);
 input(X,Y,X,Y);
 
 }

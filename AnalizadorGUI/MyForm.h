@@ -1467,7 +1467,9 @@ namespace AnalizadorGUI {
 		if(c=='X')
 		{
 		c= OpResTypeError(OperandTypeList[OperandTypeList->Count - 2], OperandTypeList[OperandTypeList->Count - 1], Operator);
-		s += "Error entre tipos";
+		
+		s += "Error entre tipos entre: "+Operands[Operands->Count-2]+" y "+ Operands[Operands->Count-1]+": "+ OperandTypeList[OperandTypeList->Count - 2] +" y "+ OperandTypeList[OperandTypeList->Count - 1];
+		//System::Windows::Forms::MessageBox::Show(s);
 		}
 		CuadDGV->Rows->Add(Cuadcount + " ", Operator, Operands[Operands->Count - 2], Operands[Operands->Count - 1], "R" + rescount);
 		Operands->RemoveAt(Operands->Count - 1);
@@ -1560,6 +1562,7 @@ namespace AnalizadorGUI {
 		String^ auxstr="";
 		bool firstkey = false;
 		int errorcount = 0;
+		String^ auxcuadsig = "";
 		//
 
 		System::Collections::Generic::Stack<String^>^ mff = gcnew System::Collections::Generic::Stack<String^>();
@@ -1581,8 +1584,9 @@ namespace AnalizadorGUI {
 			{
 				if (AlreadyExists(tokenSt) && mff->Count > 0 && mff->Peek() == "def")
 				{
-					errorlist += errorcount + ". Variable doblemente declarada " + tokenSt + "\n";
 					errorcount++;
+					errorlist += errorcount + ". Variable doblemente declarada " + tokenSt + "\n";
+					
 
 				}
 				if(!AlreadyExists(tokenSt))
@@ -1592,13 +1596,15 @@ namespace AnalizadorGUI {
 						varlist->Add(tokenSt);
 						varTypeList->Add(' ');
 						
-					}else 
+					}
+					if (mff->Count == 0 || mff->Peek() != "def")
 					{
 						//May have to rewrite
+						errorcount++;
 						errorlist += errorcount + ". Variable no declarada " + tokenSt+"\n";
 						varlist->Add(tokenSt);
 						varTypeList->Add('E');
-						errorcount++;					
+											
 					}
 									
 				}
@@ -1641,11 +1647,16 @@ namespace AnalizadorGUI {
 					
 					while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 					{
+						auxcuadsig = "";
 						rescount++; Cuadcount++;
-						errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
-
+						auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+						if (auxcuadsig != "")
+						{
+							errorcount++;
+							errorlist += errorcount + ". " + auxcuadsig + "\n";
+						}
 					}
-
+					
 				switch (token)
 				{
 				case 105:
@@ -1659,12 +1670,16 @@ namespace AnalizadorGUI {
 			}
 			if (token == 107 || token==108 || token == 128/* * / % */)
 			{
-								
+				auxcuadsig = "";
 						while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%" ))
 						{
 							rescount++; Cuadcount++;
-							errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
-
+							auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+							if (auxcuadsig != "")
+							{
+								errorcount++;
+								errorlist += errorcount + ". " + auxcuadsig + "\n";
+							}
 
 							
 						}
@@ -1690,9 +1705,14 @@ namespace AnalizadorGUI {
 				LVSTOP->Items->Add("=");
 				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 				{
+					auxcuadsig = "";
 					rescount++; Cuadcount++;
-					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
-
+					auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+					if (auxcuadsig != "")
+					{
+						errorcount++;
+						errorlist += errorcount + ". " + auxcuadsig + "\n";
+					}
 				}
 			}
 			
@@ -1704,9 +1724,14 @@ namespace AnalizadorGUI {
 					|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" 
 					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 				{
+					auxcuadsig = "";
 					rescount++; Cuadcount++;
-					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
-
+					auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+					if (auxcuadsig != "")
+					{
+						errorcount++;
+						errorlist += errorcount + ". " + auxcuadsig + "\n";
+					}
 				}
 
 				switch (token)
@@ -1740,9 +1765,14 @@ namespace AnalizadorGUI {
 					|| Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*"
 					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 				{
+					auxcuadsig = "";
 					rescount++; Cuadcount++;
-					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
-
+					auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+					if (auxcuadsig != "")
+					{
+						errorcount++;
+						errorlist += errorcount + ". " + auxcuadsig + "\n";
+					}
 				}
 
 				Operators->Add("!");
@@ -1760,15 +1790,19 @@ namespace AnalizadorGUI {
 					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 				{
 					rescount++; Cuadcount++;
-
+					auxcuadsig = "";
 					if (Operators[Operators->Count - 1] != "!")
 					{
-						errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+						auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
 					}
-					else { errorlist += Negar(Cuadcount, rescount); }
+					else { auxcuadsig += Negar(Cuadcount, rescount); }
 
-
+					if (auxcuadsig != "")
+					{
+						errorcount++;
+						errorlist += errorcount + ". " + auxcuadsig + "\n";
+					}
 				}
 				Operators->Add("&&");
 				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
@@ -1785,14 +1819,18 @@ namespace AnalizadorGUI {
 					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 				{
 					rescount++; Cuadcount++;
-
+					auxcuadsig = "";
 					if (Operators[Operators->Count - 1] != "!")
 					{
-						errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+						auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
 					}
-					else { errorlist += Negar(Cuadcount, rescount); }
-
+					else { auxcuadsig += Negar(Cuadcount, rescount); }
+					if (auxcuadsig != "")
+					{
+						errorcount++;
+						errorlist += errorcount + ". " + auxcuadsig + "\n";
+					}
 
 				}
 				Operators->Add("||");
@@ -1821,17 +1859,21 @@ namespace AnalizadorGUI {
 					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 				{
 					rescount++; Cuadcount++;
-
+					auxcuadsig = "";
 					if (Operators->Count>0 && Operators[Operators->Count - 1] != "!")
 					{
-						errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+						auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
 					}
 					if(Operators->Count>0 && Operators[Operators->Count - 1] == "!") 
 					{
-						errorlist += Negar(Cuadcount, rescount); 
+						auxcuadsig+= Negar(Cuadcount, rescount);
 					}
-
+					if (auxcuadsig != "")
+					{
+						errorcount++;
+						errorlist += errorcount + ". " + auxcuadsig + "\n";
+					}
 
 				}
 				
@@ -1926,23 +1968,28 @@ namespace AnalizadorGUI {
 					|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 				{
 					rescount++; Cuadcount++;
-
+					auxcuadsig = "";
 					if (Operators[Operators->Count - 1] != "!")
 					{
-					errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+					auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount) ;
 
-					}else{ errorlist += Negar(Cuadcount, rescount); }
+					}else{ auxcuadsig += Negar(Cuadcount, rescount) ; }
+					if (auxcuadsig != "")
+					{
+						errorcount++;
+						errorlist += errorcount + ". " + auxcuadsig + "\n";
+					}
 				}
 				
 				if(Operators->Count>0 && Operators[Operators->Count-1]=="=")
 					{
-						String^ auxcuadsig = "";
+						auxcuadsig = "";
 						Cuadcount++;
 						auxcuadsig = Asig(Cuadcount);
 						if (auxcuadsig != "")
 						{
 							errorcount++;
-							errorlist += errorcount + ". " + auxcuadsig;
+							errorlist += errorcount + ". " + auxcuadsig + "\n";
 						}
 					}
 			}
@@ -1960,17 +2007,21 @@ namespace AnalizadorGUI {
 						|| Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 					{
 						rescount++; Cuadcount++;
-
+						auxcuadsig = "";
 						if (Operators->Count > 0 && Operators[Operators->Count - 1] != "!")
 						{
-							errorlist += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
+							auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
 
 						}
 						if (Operators->Count > 0 && Operators[Operators->Count - 1] == "!")
 						{
-							errorlist += Negar(Cuadcount, rescount);
+							auxcuadsig += Negar(Cuadcount, rescount);
 						}
-
+						if (auxcuadsig != "")
+						{
+							errorcount++;
+							errorlist += errorcount + ". " + auxcuadsig + "\n";
+						}
 						/*Cuadcount++;
 							ReadWrite(Cuadcount);*/
 					}
@@ -2050,15 +2101,13 @@ namespace AnalizadorGUI {
 				mff->Push("eval");
 				Operators->Add("EF");
 			}
+
+		
 		   }
 
-		   if(errorlist->Length>0)
-		   {
-			   System::Windows::Forms::MessageBox::Show(errorlist);
-		   }
+		   TBError->Text = errorlist;
 		   for(int i=0;i<varlist->Count;i++)
 		   {
-
 			   TablaTipos->Rows->Add(varlist[i], varTypeList[i]);
 		   }
 	}
