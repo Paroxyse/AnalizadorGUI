@@ -1,10 +1,10 @@
 class ejemplo
 {
+     def X, Y of float;
+     def class1 of int;
      def bola of bool;
-     def x of int;
-     while(bola)
-     x=x+1;;
-
+     def s of string;
+do bola=bola; eval (bola);
+X=1.1;
 }
-
  

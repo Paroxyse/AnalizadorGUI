@@ -1469,7 +1469,8 @@ namespace AnalizadorGUI {
 		{
 		c= OpResTypeError(OperandTypeList[OperandTypeList->Count - 2], OperandTypeList[OperandTypeList->Count - 1], Operator);
 		
-		s += "Error entre tipos entre: "+Operands[Operands->Count-2]+" y "+ Operands[Operands->Count-1]+": "+ OperandTypeList[OperandTypeList->Count - 2] +" y "+ OperandTypeList[OperandTypeList->Count - 1];
+		s += "Error entre tipos entre: "+Operands[Operands->Count-2]+
+			" y "+ Operands[Operands->Count-1]+": "+ OperandTypeList[OperandTypeList->Count - 2] +" y "+ OperandTypeList[OperandTypeList->Count - 1];
 		//System::Windows::Forms::MessageBox::Show(s);
 		}
 		CuadDGV->Rows->Add(Cuadcount + " ", Operator, Operands[Operands->Count - 2], Operands[Operands->Count - 1], "R" + rescount);
@@ -1513,7 +1514,8 @@ namespace AnalizadorGUI {
 	{
 		if(OperandTypeList[OperandTypeList->Count-1]!= OperandTypeList[OperandTypeList->Count - 2])
 		{
-			s += "Error entre tipos en asignación a "+ Operands[Operands->Count-2]+", "+ Operands[Operands->Count - 1]+ " "+OperandTypeList[OperandTypeList->Count-2]+ " "+OperandTypeList[OperandTypeList->Count - 1];
+			s += "Error entre tipos en asignación a "+ Operands[Operands->Count-2]+", "+
+				Operands[Operands->Count - 1]+ " "+OperandTypeList[OperandTypeList->Count-2]+ " "+OperandTypeList[OperandTypeList->Count - 1];
 		}
 		CuadDGV->Rows->Add(Cuadcount + " ", "=", Operands[Operands->Count - 2],"---", Operands[Operands->Count - 1]);
 		Operands->RemoveAt(Operands->Count - 1);
@@ -1569,14 +1571,16 @@ namespace AnalizadorGUI {
 
 		System::Collections::Generic::Stack<String^>^ mff = gcnew System::Collections::Generic::Stack<String^>();
 
-		//Este código es malísimo :)
+		//Se analiza semánticamente y se genera código en base a la lista de tokens
+		//Realiza las acciones semánticas en base a qué token encuentra en la iteración actual
+		//Y qué tokens ha encontrado anteriormente
 		while(tokenlist->Count>0)
 			{
 			token = tokenlist[0];
 			tokenSt = tokenliststr[0];
 			tokenlist->RemoveAt(0);
 			tokenliststr->RemoveAt(0);
-			
+			//conversión de token 100 al correspondiente a una palabra reservada particular
 			if(token==100/*RES*/)
 			{
 				token += 31;
@@ -1584,6 +1588,7 @@ namespace AnalizadorGUI {
 			}
 			if(token==101/*ID*/&&firstkey)
 			{
+				//Si ya existe y estamos en una definición, es una variable doblemente declarada
 				if (AlreadyExists(tokenSt) && mff->Count > 0 && mff->Peek() == "def")
 				{
 					errorcount++;
@@ -1591,6 +1596,8 @@ namespace AnalizadorGUI {
 					
 
 				}
+				//Si no existe y estamos en una definición, la define sin tipo
+				//Si no existe y no estamos en una definición, la define como entero y marca error
 				if(!AlreadyExists(tokenSt))
 				{
 					if(mff->Count>0 && mff->Peek() == "def") 
@@ -1610,8 +1617,7 @@ namespace AnalizadorGUI {
 					}
 									
 				}
-				
-
+				//Si ya existe y no se está dentro de una declaración, agrega a pila de operandos
 				if(AlreadyExists(tokenSt)&& varTypeList[OperandIndex(tokenSt)] != ' ' && !(mff->Count > 0 && mff->Peek() == "def"))
 				{
 					Operands->Add(tokenSt);
@@ -1620,7 +1626,7 @@ namespace AnalizadorGUI {
 					
 				}
 			}
-			//consts :)
+			//Si el token es una constante, la agrega junto con su tipo a la pila de operandos
 			if(token==102 || token == 103 || token ==104 || token ==125 || token == 126)
 			{
 				constcount++;
@@ -1642,12 +1648,9 @@ namespace AnalizadorGUI {
 				}
 				LSTVOPN->Items->Add(Operands[Operands->Count - 1]);
 			}
-		
+			//Si el token es un operador aritmético o lógico, realiza las operaciones con mayor prioridad que se encuentran en la pila y después inserta el operador
 			if(token==105 || token ==106/* + - */)
-			{
-				
-				
-					
+			{			
 					while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
 					{
 						auxcuadsig = "";
@@ -1658,8 +1661,7 @@ namespace AnalizadorGUI {
 							errorcount++;
 							errorlist += errorcount + ". " + auxcuadsig + "\n";
 						}
-					}
-					
+					}				
 				switch (token)
 				{
 				case 105:
@@ -1701,27 +1703,14 @@ namespace AnalizadorGUI {
 				}
 				LVSTOP->Items->Add(Operators[Operators->Count-1]);
 			}
+			//Si el token es un operador de asignación, lo empuja a la pila de operadores.
 			if(token==109/*=*/)
 			{
 				mff->Push("=");
 				Operators->Add("=");
 				LVSTOP->Items->Add("=");
-				/*while (
-					Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%")
-					)
-				
-				{
-					auxcuadsig = "";
-					rescount++; Cuadcount++;
-					auxcuadsig += Operation(Operators[Operators->Count - 1], rescount, Cuadcount);
-					if (auxcuadsig != "")
-					{
-						errorcount++;
-						errorlist += errorcount + ". " + auxcuadsig + "\n";
-					}
-				}*/
-			}
 			
+			}		
 			if(token>=110 && token <= 115/* == !=  < <= > <= */)
 			{
 				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!=" ||
@@ -1739,8 +1728,8 @@ namespace AnalizadorGUI {
 						errorlist += errorcount + ". " + auxcuadsig + "\n";
 					}
 				}
-
-				switch (token)
+					//Agrega el operador a la pila de operadores dependiendo del número de token
+					switch (token)
 				{
 				case 110:
 					Operators->Add("==");
@@ -1763,6 +1752,7 @@ namespace AnalizadorGUI {
 				}
 				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 			}
+			//Si el operador tiene menor o igual prioridad que el operador de negación
 			if(token==116/* ! */)
 			{
 				while (Operators->Count >= 1 && ( Operators[Operators->Count - 1] == "==" || Operators[Operators->Count - 1] == "!=" ||
@@ -1842,17 +1832,15 @@ namespace AnalizadorGUI {
 				Operators->Add("||");
 				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 			}
+			//Si se encuentra un paréntesis de apertura, se agrega marca FP a pila de operadores
 			if(token==119 /*(*/)
 			{
-				if (mff->Count > 0 && mff->Peek() == "while" && Operators->Count>0 && Operators[Operators->Count-1]=="WHF")
-				{
-					/*Jumps->Add(Cuadcount+1);
-					LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);*/
-				}
+				
 				Operators->Add("FP");
 				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 				
 			}
+			//Si se encuentra un paréntesis de cierre, se realizan todas las operaciones que se pueden hacer con lo contenido en las pilas
 			if (token == 120 /*)*/)
 			{
 				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "||"
@@ -1886,7 +1874,9 @@ namespace AnalizadorGUI {
 					Operators->RemoveAt(Operators->Count - 1);
 				
 				
+			//Si es el paréntesis de cierre de un if, un while o un eval, crea los saltos correspondientes y agrega a la pila de saltos en el caso de if/while
 
+			//Se podrían hacer menos líneas uniendo las condiciones del if y while, pero por legibilidad y facilidad de desarrollo lo dejamos así
 				if(mff->Peek()=="if" && (Operators->Count > 0 && Operators[Operators->Count - 1] == "FIF"))
 				{
 					Cuadcount++;
@@ -1902,7 +1892,6 @@ namespace AnalizadorGUI {
 					Cuadcount++;
 					Jumps->Add(Cuadcount);
 					LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
-
 					CuadDGV->Rows->Add(Cuadcount + " ", "SF", Operands[Operands->Count - 1], "", "?");
 					Operands->RemoveAt(Operands->Count - 1);
 					OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
@@ -1910,32 +1899,33 @@ namespace AnalizadorGUI {
 				if (mff->Peek() == "eval" && (Operators->Count > 0 && Operators[Operators->Count - 1] == "EF"))
 				{
 					Cuadcount++;
-					//Jumps->Add(Cuadcount);
-					//LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
-
 					CuadDGV->Rows->Add(Cuadcount + " ", "SV", Operands[Operands->Count - 1], "", Jumps[Jumps->Count-1]);
 					Operands->RemoveAt(Operands->Count - 1);
 					OperandTypeList->RemoveAt(OperandTypeList->Count - 1);
 				}
 			
 			}
+			//Si se encuentra un ; se remueven marcas de fondo falso, se rellenan saltos y se generan cuádruplos correspondientes
 			if(token==123/*semicolon ;*/)
 			{
-				//Me puedo ahorrar lineas en esto, pero la prioridad es que funcione primero
+				
 
 				if (mff->Count > 0) {
+					//Se llena salto en falso de if
 					if(mff->Peek()=="if" && Jumps->Count>0)
 					{
 						Operators->RemoveAt(Operators->Count - 1);
 						fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
 						Jumps->RemoveAt(Jumps->Count - 1);
 					}
+					//Se llena salto incondicional de if
 					if (mff->Peek() == "else" && Jumps->Count > 0)
 					{
 						mff->Pop();
 						fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
 						Jumps->RemoveAt(Jumps->Count - 1);
 					}
+					//se crea salto incondicional de while, y se rellena salto en falso
 					if (mff->Peek() == "while" && Jumps->Count > 0)
 					{
 						Operators->RemoveAt(Operators->Count - 1);
@@ -1944,14 +1934,13 @@ namespace AnalizadorGUI {
 						fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
 						Jumps->RemoveAt(Jumps->Count - 1);
 					}
+					//se remueve mff de eval
 					if (mff->Peek() == "eval" && Jumps->Count > 0)
 					{
 						Operators->RemoveAt(Operators->Count - 1);
-						//Cuadcount++;
-						
-						/*fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
-						Jumps->RemoveAt(Jumps->Count - 1);*/
+					
 					}
+					//se rellenan todos los cuádruplos de read/write
 					if ((mff->Peek() == "input" && Operators->Count > 0 && Operators[Operators->Count - 1] == "IN")
 						|| (mff->Peek() == "output" && Operators->Count > 0 && Operators[Operators->Count - 1] == "OUT"))
 					{
@@ -1964,6 +1953,7 @@ namespace AnalizadorGUI {
 					}
 					mff->Pop();
 				}
+				//Realiza todas las operaciones aritméticas y lógicas que queden 
 				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "||" 
 					|| Operators[Operators->Count - 1] == "&&"
 					|| Operators[Operators->Count - 1] == "!" 
@@ -1986,7 +1976,7 @@ namespace AnalizadorGUI {
 						errorlist += errorcount + ". " + auxcuadsig + "\n";
 					}
 				}
-				
+				//Realiza cuádruplos de asignación
 				if(Operators->Count>0 && Operators[Operators->Count-1]=="=")
 					{
 						auxcuadsig = "";
@@ -2001,6 +1991,7 @@ namespace AnalizadorGUI {
 			}
 			if (token == 124/*comma ,*/)
 			{
+				//Si se está dentro de un estatuto write, realiza todas las operaciones que anteceden a la coma
 				if (mff->Count>0 && mff->Peek() == "output")
 				{
 					while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "||"
@@ -2028,18 +2019,20 @@ namespace AnalizadorGUI {
 							errorcount++;
 							errorlist += errorcount + ". " + auxcuadsig + "\n";
 						}
-						/*Cuadcount++;
-							ReadWrite(Cuadcount);*/
+						
 					}
 					
 
 				}
 				
 			}
+
+			//Indica que se ha pasado la definición de clases (las acciones de definición de clase no fueron implementadas)
 			if(token==129/* { */)
 			{
 				firstkey = true;
 			}
+			//Si es una variable reservada de tipo de dato, se rellenan todas las variables sin tipo de dato asignado con ese tipo de dato
 			if(token>=133 && token<=137 /*datatype*/)
 			{
 				for(int i=0;i< varTypeList->Count;i++)
@@ -2052,14 +2045,16 @@ namespace AnalizadorGUI {
 					}
 				}
 			}
+			//Si encuentra un if, inserta marca de fondo falso 
 			if(token==138 /*if*/)
 			{
 			
 				mff->Push("if");
 				Operators->Add("FIF");
 			
-				//LVSTOP->Items->Add(Operators[Operators->Count - 1]);
+				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
 			}
+			//Si encuentra un else, genera salto incondicional, rellena salto en falso
 			if (token == 139 /*else*/)
 			{
 				mff->Push("else");
@@ -2070,16 +2065,20 @@ namespace AnalizadorGUI {
 				Jumps->Add(Cuadcount);
 				LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
 			}
+			//Si encuentra un do, agrega cuad+1 a pila de saltos
 			if(token==140/*do*/)
 			{
 				Jumps->Add(Cuadcount + 1);
 				LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
 			}
+			//Si encuentra while, inserta marca de fondo falso
 			if(token==141/*while*/)
 			{
 				mff->Push("while");
 				Operators->Add("WHF");
+
 			}
+			//Si encuentra read/write, los inserta a la pila de operadores y los inserta a la pila de fondo falso (mff) que se utiliza para saber dentro de qué estatuto se encuentra el código
 			if(token==142/*input*/)
 			{
 				mff->Push("input");
@@ -2090,6 +2089,7 @@ namespace AnalizadorGUI {
 				mff->Push("output");
 				Operators->Add("OUT");
 			}
+			//Si  encuentra def lo inserta a mff
 			if (token == 144/*def*/)
 			{
 				mff->Push("def");
@@ -2098,6 +2098,8 @@ namespace AnalizadorGUI {
 			//break
 			//lib
 			//of	
+
+			//Si se encuentra eval lo inserta a mff y agrega mff a pila de operadores 
 			if(token==150/* eval */)
 			{
 				mff->Push("eval");
@@ -2106,7 +2108,7 @@ namespace AnalizadorGUI {
 
 		
 		   }
-
+		   //rellenado de lista de errores y de tabla de tipos
 		   TBError->Text = errorlist;
 		   for(int i=0;i<varlist->Count;i++)
 		   {
