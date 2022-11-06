@@ -1,34 +1,9 @@
 class ejemplo
 {
-     def X, Y of float;
-     def class1 of int;
      def bola of bool;
-     def s of string;
-X=1.1;
-X=X+1.1*2;
-bola= ! X>=11.1 && X>1.1 || !X<Y;
-X=(1+2)*3.1;
-s="awa";
-if(X>0.0) 
-X=1.0;
-else 
-s="owo";
-if( (X==0.0 && X==0.0) && (bola==bola) ) ;
-; 
-while((X>Y)&&(Y<X) && bola) X=1.1;;
-
-X=class1;
-s=bola+1;
-s=1;
-x=0;
-def X of int;
-
-
-do X=1.1; 
-Y=0.0;
-eval (X);
-output((X+1.1) + 1,Y);
-input(X,Y,X,Y);
+     def x of int;
+     while(bola)
+     x=x+1;;
 
 }
 

@@ -1314,6 +1314,7 @@ namespace AnalizadorGUI {
 				Windows::Forms::MessageBox::Show("Archivo analizado exitosamente ", "Nice");
 				return true;		
 	}
+	
 	char OpResType(char Op1,char Op2, String^ Op)
 	{
 		int col = 0;
@@ -1327,7 +1328,7 @@ namespace AnalizadorGUI {
 		,{'F','S','X','X','S','X','X','X','X','X',},{'F','B','X','X','X','X','X','X','X','X',},{'F','C','X','X','X','X','X','X','X','X',}
 		,{'F','F','F','F','F','F','X','B','B','X',} };
 		std::vector<char> lista = { 'E','E','E','F','E','B','B','B' };
-		//Tener que escribir estos métodos de esta manera me desagrada, pero no pienso partirme la cabeza en una solución menos salvaje
+		//Tener que escribir estos métodos de esta manera me desagrada, pero no c++ no soporta strings en switches, entonces puro if :)
 		if(Op=="*")
 		{
 			col = 2;
@@ -1544,6 +1545,7 @@ namespace AnalizadorGUI {
 			return; 
 		}
 		int Cuadcount = 0;
+		//vaciado de elementos de UI y estructuras de datos
 		varlist->Clear();
 		varTypeList->Clear();
 		Operators->Clear();
@@ -1618,6 +1620,7 @@ namespace AnalizadorGUI {
 					
 				}
 			}
+			//consts :)
 			if(token==102 || token == 103 || token ==104 || token ==125 || token == 126)
 			{
 				constcount++;
@@ -1703,7 +1706,10 @@ namespace AnalizadorGUI {
 				mff->Push("=");
 				Operators->Add("=");
 				LVSTOP->Items->Add("=");
-				while (Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%"))
+				/*while (
+					Operators->Count >= 1 && (Operators[Operators->Count - 1] == "+" || Operators[Operators->Count - 1] == "-" || Operators[Operators->Count - 1] == "*" || Operators[Operators->Count - 1] == "/" || Operators[Operators->Count - 1] == "%")
+					)
+				
 				{
 					auxcuadsig = "";
 					rescount++; Cuadcount++;
@@ -1713,7 +1719,7 @@ namespace AnalizadorGUI {
 						errorcount++;
 						errorlist += errorcount + ". " + auxcuadsig + "\n";
 					}
-				}
+				}*/
 			}
 			
 			if(token>=110 && token <= 115/* == !=  < <= > <= */)
@@ -1840,8 +1846,8 @@ namespace AnalizadorGUI {
 			{
 				if (mff->Count > 0 && mff->Peek() == "while" && Operators->Count>0 && Operators[Operators->Count-1]=="WHF")
 				{
-					Jumps->Add(Cuadcount+1);
-					LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);
+					/*Jumps->Add(Cuadcount+1);
+					LSTVJMP->Items->Add("" + Jumps[Jumps->Count - 1]);*/
 				}
 				Operators->Add("FP");
 				LVSTOP->Items->Add(Operators[Operators->Count - 1]);
@@ -1934,7 +1940,7 @@ namespace AnalizadorGUI {
 					{
 						Operators->RemoveAt(Operators->Count - 1);
 						Cuadcount++;
-						CuadDGV->Rows->Add(Cuadcount + " ", "SI", "", "", Jumps[Jumps->Count - 2]+"");
+						CuadDGV->Rows->Add(Cuadcount + " ", "SI", "", "", Jumps[Jumps->Count - 1]+"");
 						fill(Jumps[Jumps->Count - 1], Cuadcount + 1);
 						Jumps->RemoveAt(Jumps->Count - 1);
 					}
@@ -2046,9 +2052,6 @@ namespace AnalizadorGUI {
 					}
 				}
 			}
-			
-
-
 			if(token==138 /*if*/)
 			{
 			
@@ -2094,8 +2097,7 @@ namespace AnalizadorGUI {
 			//to
 			//break
 			//lib
-			//of
-			
+			//of	
 			if(token==150/* eval */)
 			{
 				mff->Push("eval");
@@ -2112,6 +2114,10 @@ namespace AnalizadorGUI {
 		   }
 	}
 	//Limpia los cuadros de texto
+
+
+
+
 	void limpiar(bool clearfile)
 	{
 		if (clearfile) 
